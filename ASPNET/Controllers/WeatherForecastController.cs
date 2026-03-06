@@ -17,7 +17,7 @@ namespace ASPNET.Controllers
         {
             _logger = logger;
         }
-
+        //noi nes
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
