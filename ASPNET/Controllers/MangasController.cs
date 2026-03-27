@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ASPNET.Data;
 using ASPNET.Models;
 using ASPNET.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASPNET.Controllers;
 
@@ -87,6 +88,29 @@ public class MangasController : ControllerBase
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetManga), new { id = manga.Id }, MapToDto(manga));
+    }
+
+    // PUT: api/mangas/5 (Admin Only)
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> PutManga(int id, Manga manga)
+    {
+        if (id != manga.Id)
+            return BadRequest(new { message = "Id không khớp" });
+
+        if (!_context.Categories.Any(c => c.Id == manga.CategoryId))
+            return BadRequest(new { message = "Thể loại không tồn tại" });
+
+        _context.Entry(manga).State = EntityState.Modified;
+
+        try { await _context.SaveChangesAsync(); }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!_context.Mangas.Any(e => e.Id == id)) return NotFound();
+            throw;
+        }
+
+        return NoContent();
     }
 
     // DELETE: api/mangas/5 (Admin Only)

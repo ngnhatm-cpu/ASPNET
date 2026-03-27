@@ -25,28 +25,36 @@ public class ContentController : ControllerBase
 
     // GET: api/content/read/5
     [HttpGet("read/{chapterId}")]
+    [AllowAnonymous] // Cho phép khách vãng lai đọc chương miễn phí
     public async Task<IActionResult> ReadChapter(int chapterId)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        // Kiểm tra quyền sở hữu
-        var hasAccess = await _context.UserLibraries.AnyAsync(ul => ul.UserId == userId && ul.ChapterId == chapterId);
-        if (!hasAccess)
-            return Forbid(); // Trả về 403 nếu chưa mua
-
         var chapter = await _context.Chapters.FindAsync(chapterId);
         if (chapter == null) return NotFound();
 
-        // Giả lập trả về danh sách link ảnh có chữ ký (Pre-signed URLs)
-        // Trong thực tế sẽ gọi AWS S3 SDK hoặc Azure Blob SDK
-        var demoPages = new List<string> {
-            $"https://storage.cdn.com/{chapter.FilePath}/page1.jpg?token=signed_exp_5min",
-            $"https://storage.cdn.com/{chapter.FilePath}/page2.jpg?token=signed_exp_5min"
-        };
+        // 1. Nếu chương MIỄN PHÍ (Price = 0) -> Cho đọc luôn
+        if (chapter.Price == 0)
+        {
+            return Ok(new { 
+                chapterTitle = chapter.Title,
+                isFree = true,
+                pages = GetDemoPages(chapter.FilePath)
+            });
+        }
+
+        // 2. Nếu chương CÓ PHÍ -> Phải đăng nhập và đã mua
+        if (!User.Identity?.IsAuthenticated ?? true)
+            return Unauthorized(new { message = "Chương này yêu cầu đăng nhập và mua để đọc" });
+
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var hasAccess = await _context.UserLibraries.AnyAsync(ul => ul.UserId == userId && ul.ChapterId == chapterId);
+        
+        if (!hasAccess)
+            return Forbid(); // Trả về 403 nếu chương có phí mà chưa mua
 
         return Ok(new { 
             chapterTitle = chapter.Title,
-            pages = demoPages,
+            isFree = false,
+            pages = GetDemoPages(chapter.FilePath),
             expiresIn = "5 minutes"
         });
     }
@@ -55,15 +63,18 @@ public class ContentController : ControllerBase
     [HttpGet("download/{chapterId}")]
     public async Task<IActionResult> DownloadChapter(int chapterId)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var userEmail = User.FindFirstValue(ClaimTypes.Email)!;
-
-        // Check ownership
-        var hasAccess = await _context.UserLibraries.AnyAsync(ul => ul.UserId == userId && ul.ChapterId == chapterId);
-        if (!hasAccess) return Forbid();
-
         var chapter = await _context.Chapters.Include(c => c.Manga).FirstOrDefaultAsync(c => c.Id == chapterId);
         if (chapter == null) return NotFound();
+
+        // Miễn phí thì cho tải luôn, có phí thì check library
+        if (chapter.Price > 0)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var hasAccess = await _context.UserLibraries.AnyAsync(ul => ul.UserId == userId && ul.ChapterId == chapterId);
+            if (!hasAccess) return Forbid();
+        }
+
+        var userEmail = User.FindFirstValue(ClaimTypes.Email) ?? "Guest";
 
         // 1. Giả lập lấy ảnh từ folder/cloud
         // Thực tế: Lấy ảnh từ đĩa hoặc cloud storage
@@ -84,6 +95,14 @@ public class ContentController : ControllerBase
 
         ms.Position = 0;
         return File(ms.ToArray(), "application/zip", $"{chapter.Manga!.Title}_{chapter.Title}.zip");
+    }
+
+    private List<string> GetDemoPages(string? filePath)
+    {
+        return new List<string> {
+            $"https://storage.cdn.com/{filePath}/page1.jpg?token=signed_demo",
+            $"https://storage.cdn.com/{filePath}/page2.jpg?token=signed_demo"
+        };
     }
 
     private byte[] CreateDummyImage()

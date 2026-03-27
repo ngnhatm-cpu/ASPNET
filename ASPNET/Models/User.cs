@@ -22,6 +22,8 @@ public class User
     [MaxLength(20)]
     public string Role { get; set; } = "Customer"; // Admin, Customer
 
+    public decimal Balance { get; set; } = 0; // Số dư Xu
+
     [MaxLength(20)]
     public string? PhoneNumber { get; set; }
 

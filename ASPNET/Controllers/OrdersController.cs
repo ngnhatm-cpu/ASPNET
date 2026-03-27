@@ -92,6 +92,14 @@ public class OrdersController : ControllerBase
 
         order.TotalAmount = total;
 
+        // KIỂM TRA SỐ DƯ (VÍ XU)
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return NotFound();
+        if (user.Balance < total)
+            return BadRequest(new { message = $"Không đủ Xu. Bạn cần {total} Xu nhưng hiện tại chỉ có {user.Balance} Xu." });
+
+        // TRỪ TIỀN & LƯU ĐƠN HÀNG
+        user.Balance -= total;
         _context.Orders.Add(order);
 
         // GHI VÀO USER LIBRARY (Sổ đỏ sở hữu)

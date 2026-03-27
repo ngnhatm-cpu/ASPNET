@@ -50,6 +50,46 @@ public class UsersController : ControllerBase
         return Ok(MapToDto(user));
     }
 
+    // PUT: api/users/5 (Admin or Self)
+    [HttpPut("{id}")]
+    [Authorize]
+    public async Task<IActionResult> PutUser(int id, User user)
+    {
+        var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var currentUserRole = User.FindFirstValue(ClaimTypes.Role);
+
+        if (currentUserRole != "Admin" && currentUserId != id)
+            return Forbid();
+
+        if (id != user.Id)
+            return BadRequest();
+
+        var existingUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+        if (existingUser == null) return NotFound();
+
+        // Admin có thể đổi Role/Balance, còn User thường thì không
+        if (currentUserRole != "Admin")
+        {
+            user.Role = existingUser.Role;
+            user.Balance = existingUser.Balance;
+        }
+        
+        // Luôn giữ PasswordHash cũ nếu không có cơ chế đổi mật khẩu riêng ở đây
+        user.PasswordHash = existingUser.PasswordHash;
+        user.CreatedAt = existingUser.CreatedAt;
+
+        _context.Entry(user).State = EntityState.Modified;
+
+        try { await _context.SaveChangesAsync(); }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!_context.Users.Any(e => e.Id == id)) return NotFound();
+            throw;
+        }
+
+        return NoContent();
+    }
+
     // DELETE: api/users/5 (Admin Only)
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
@@ -71,6 +111,7 @@ public class UsersController : ControllerBase
             Username = u.Username,
             Email = u.Email,
             Role = u.Role,
+            Balance = u.Balance,
             CreatedAt = u.CreatedAt
         };
     }

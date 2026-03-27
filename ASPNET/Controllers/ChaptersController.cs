@@ -56,6 +56,29 @@ public class ChaptersController : ControllerBase
         return CreatedAtAction(nameof(GetChapter), new { id = chapter.Id }, MapToDto(chapter));
     }
 
+    // PUT: api/chapters/5 (Admin Only)
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> PutChapter(int id, Chapter chapter)
+    {
+        if (id != chapter.Id)
+            return BadRequest(new { message = "Id không khớp" });
+
+        if (!_context.Mangas.Any(m => m.Id == chapter.MangaId))
+            return BadRequest(new { message = "Manga không tồn tại" });
+
+        _context.Entry(chapter).State = EntityState.Modified;
+
+        try { await _context.SaveChangesAsync(); }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!_context.Chapters.Any(e => e.Id == id)) return NotFound();
+            throw;
+        }
+
+        return NoContent();
+    }
+
     // DELETE: api/chapters/5 (Admin Only)
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]

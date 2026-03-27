@@ -48,6 +48,7 @@ public class AuthController : ControllerBase
             Username = user.Username,
             Email = user.Email,
             Role = user.Role,
+            Balance = user.Balance,
             CreatedAt = user.CreatedAt
         });
     }
@@ -71,6 +72,7 @@ public class AuthController : ControllerBase
                 Username = user.Username,
                 Email = user.Email,
                 Role = user.Role,
+                Balance = user.Balance,
                 CreatedAt = user.CreatedAt
             }
         });
