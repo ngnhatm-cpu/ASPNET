@@ -24,19 +24,55 @@ public class UsersController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
+        //return await _context.Users
+        //    .Select(u => MapToDto(u))
+        //    .ToListAsync();
         return await _context.Users
-            .Select(u => MapToDto(u))
-            .ToListAsync();
+    .Select(u => new UserDto
+    {
+        Id = u.Id,
+        Username = u.Username,
+        Email = u.Email,
+        Role = u.Role,
+        Balance = u.Balance,
+        CreatedAt = u.CreatedAt
+    })
+    .ToListAsync();
     }
 
     // GET: api/users/5 (Admin or Self)
     [HttpGet("{id}")]
     [Authorize]
+    //public async Task<ActionResult<UserDto>> GetUser(int id)
+    //{
+    //    var currentUserId = int.Parse(User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)!);
+    //    var currentUserRole = User.FindFirstValue(System.Security.Claims.ClaimTypes.Role);
+
+    //    if (currentUserRole != "Admin" && currentUserId != id)
+    //        return Forbid();
+
+    //    var user = await _context.Users
+    //        .Include(u => u.Library)
+    //        .FirstOrDefaultAsync(u => u.Id == id);
+
+    //    if (user == null)
+    //        return NotFound();
+
+    //    return Ok(MapToDto(user));
+    //}
+
     public async Task<ActionResult<UserDto>> GetUser(int id)
     {
-        var currentUserId = int.Parse(User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)!);
-        var currentUserRole = User.FindFirstValue(System.Security.Claims.ClaimTypes.Role);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var currentUserRole = User.FindFirstValue(ClaimTypes.Role);
 
+        // BẠN ĐANG THIẾU ĐOẠN NÀY (Đoạn này vừa check lỗi, vừa tạo ra biến currentUserId)
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int currentUserId))
+        {
+            return Unauthorized();
+        }
+
+        // Biến currentUserId ở trên giờ đã có giá trị để dùng ở đây rồi nè
         if (currentUserRole != "Admin" && currentUserId != id)
             return Forbid();
 
