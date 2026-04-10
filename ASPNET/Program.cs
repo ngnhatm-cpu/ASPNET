@@ -13,9 +13,21 @@ var builder = WebApplication.CreateBuilder(args);
 // ĐĂNG KÝ DỊCH VỤ (Services Registration)
 // =============================================
 
-// Kết nối PostgreSQL (Dùng cho Render)
+// Kết nối PostgreSQL (Hỗ trợ cả định dạng URI của Render và Key-Value chuẩn)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
+    {
+        // Chuyển đổi định dạng postgresql:// sang Key-Value chuẩn
+        var uri = new Uri(connectionString);
+        var userInfo = uri.UserInfo.Split(':');
+        connectionString = $"Host={uri.Host};Database={uri.AbsolutePath.Substring(1)};Username={userInfo[0]};Password={userInfo[1]};Port={uri.Port};SSL Mode=Require;Trust Server Certificate=true";
+    }
+
+    options.UseNpgsql(connectionString);
+});
 
 // Đăng ký Watermark Service
 builder.Services.AddScoped<IWatermarkService, WatermarkService>();
