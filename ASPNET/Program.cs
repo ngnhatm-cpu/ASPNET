@@ -13,9 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 // ĐĂNG KÝ DỊCH VỤ (Services Registration)
 // =============================================
 
-// Kết nối SQL Server
+// Kết nối PostgreSQL (Dùng cho Render)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Đăng ký Watermark Service
 builder.Services.AddScoped<IWatermarkService, WatermarkService>();
@@ -125,6 +125,13 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Tự động Migrate database khi khởi động (Dành cho PostgreSQL trên Render)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 app.MapControllers();
 
