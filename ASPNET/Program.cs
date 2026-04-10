@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -101,6 +102,12 @@ var app = builder.Build();
 // =============================================
 // MIDDLEWARE PIPELINE
 // =============================================
+
+// Cấu hình Forwarded Headers để nhận đúng HTTPS từ Render Proxy
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 // Cho phép Swagger luôn hiển thị (kể cả ở Production trên Render)
 app.UseSwagger();

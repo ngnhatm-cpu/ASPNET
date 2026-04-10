@@ -1,27 +1,26 @@
-# Cơ bản: Build Stage
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy file csproj và restore dependencies
+# Copy solution và project file
+COPY ["ASPNET.sln", "./"]
 COPY ["ASPNET/ASPNET.csproj", "ASPNET/"]
-RUN dotnet restore "ASPNET/ASPNET.csproj"
+
+# Restore dependencies
+RUN dotnet restore
 
 # Copy toàn bộ code và build
 COPY . .
 WORKDIR "/src/ASPNET"
-RUN dotnet build "ASPNET.csproj" -c Release -o /app/build
+RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
-# Publish stage
-FROM build AS publish
-RUN dotnet publish "ASPNET.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-# Runtime stage
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-EXPOSE 8080
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 
-# Biến môi trường để chạy trên cổng 8080 (Render mặc định dùng cổng này)
+# Sử dụng biến PORT của Render
 ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "ASPNET.dll"]
