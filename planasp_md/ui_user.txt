@@ -1,0 +1,1843 @@
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MangaShop | The Cinematic Collector</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&amp;family=Be+Vietnam+Pro:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-container": "#5b000e",
+              "tertiary": "#6fd8cc",
+              "on-surface": "#e4e1e9",
+              "on-secondary-fixed-variant": "#554600",
+              "surface-container": "#1f1f25",
+              "background": "#0A0A0F",
+              "on-primary": "#680011",
+              "inverse-primary": "#bb152c",
+              "surface-container-lowest": "#0e0e13",
+              "inverse-surface": "#e4e1e9",
+              "on-error-container": "#ffdad6",
+              "tertiary-fixed-dim": "#6fd8cc",
+              "primary-fixed": "#ffdad8",
+              "surface-bright": "#39383e",
+              "surface-container-highest": "#35343a",
+              "primary": "#ffb3b1",
+              "on-secondary": "#3b2f00",
+              "error": "#ffb4ab",
+              "secondary": "#fff0c4",
+              "primary-container": "#ff535b",
+              "on-secondary-container": "#6d5a00",
+              "on-tertiary-container": "#00302c",
+              "outline-variant": "#5b403f",
+              "on-tertiary-fixed": "#00201d",
+              "on-tertiary": "#003733",
+              "secondary-fixed": "#ffe171",
+              "secondary-fixed-dim": "#e9c400",
+              "inverse-on-surface": "#303036",
+              "on-primary-fixed": "#410007",
+              "primary-fixed-dim": "#ffb3b1",
+              "on-primary-fixed-variant": "#92001c",
+              "tertiary-fixed": "#8cf4e8",
+              "surface-container-low": "#1b1b20",
+              "secondary-container": "#fad100",
+              "surface-tint": "#ffb3b1",
+              "surface-container-high": "#2a292f",
+              "surface-variant": "#35343a",
+              "outline": "#ab8987",
+              "surface-dim": "#131318",
+              "on-tertiary-fixed-variant": "#00504a",
+              "tertiary-container": "#2fa096",
+              "surface": "#131318",
+              "on-surface-variant": "#e4bebc",
+              "error-container": "#93000a",
+              "on-secondary-fixed": "#221b00",
+              "on-background": "#e4e1e9",
+              "on-error": "#690005"
+            },
+            fontFamily: {
+              "headline": ["Epilogue"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      body { background-color: #0A0A0F; color: #e4e1e9; font-family: 'Be Vietnam Pro', sans-serif; overflow-x: hidden; min-height: 100vh; }
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      .hero-gradient { background: radial-gradient(circle at center, rgba(255, 83, 91, 0.1) 0%, transparent 80%); }
+      .ticker-container { overflow: hidden; white-space: nowrap; }
+      .ticker-content { display: inline-block; animation: scroll-left 30s linear infinite; }
+      @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+      .floating { animation: float 6s ease-in-out infinite; }
+      @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+      .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    
+      @keyframes fade-up-stagger { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes pulse-shadow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 83, 91, 0.4); } 50% { box-shadow: 0 0 20px 10px rgba(255, 83, 91, 0); } }
+      
+      /* Visibility Fix: Use opacity: 0.01 as base if we want to ensure it's "visible" to layout engines or provide a CSS-only fallback */
+      .reveal { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.97); 
+        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+        will-change: transform, opacity; 
+      }
+      .reveal.revealed { opacity: 1; transform: translateY(0) scale(1); }
+      /* Fallback for no-js or failed trigger */
+      @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+      
+      .category-card:hover { box-shadow: 0 0 24px rgba(255, 83, 91, 0.5); }
+      .animate-fade-up { animation: fade-up-stagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+      .pulse-btn { animation: pulse-shadow 2s infinite; }
+
+      /* Ambient Animations */
+      @keyframes lightning-flicker { 
+        0%, 90%, 100% { opacity: 0; } 
+        92%, 96% { opacity: 0.8; } 
+        93% { opacity: 0; } 
+        95% { opacity: 1; }
+      }
+      .lightning { animation: lightning-flicker 4s infinite; z-index: 5; pointer-events: none; }
+
+      @keyframes blossom-fall {
+        0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+        10% { opacity: 0.6; }
+        90% { opacity: 0.6; }
+        100% { transform: translate(-400px, 800px) rotate(720deg); opacity: 0; }
+      }
+      .blossom { animation: blossom-fall linear infinite; z-index: 5; pointer-events: none; }
+
+      @keyframes dust-float {
+        0% { transform: translateY(0); opacity: 0; }
+        20% { opacity: 0.2; }
+        80% { opacity: 0.2; }
+        100% { transform: translateY(-100px); opacity: 0; }
+      }
+      .dust { animation: dust-float linear infinite; z-index: 5; pointer-events: none; }
+
+      @keyframes embers-rise {
+        0% { transform: translateY(0) scale(1); opacity: 0; }
+        20% { opacity: 0.6; }
+        100% { transform: translateY(-300px) scale(0.5); opacity: 0; }
+      }
+      .ember { animation: embers-rise linear infinite; z-index: 5; pointer-events: none; }
+
+      /* Category Title Glow */
+      @keyframes glow-rotate {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+      .title-glow { 
+        background: radial-gradient(circle, rgba(255, 83, 91, 0.12) 0%, transparent 70%);
+        animation: glow-rotate 15s linear infinite;
+      }
+
+      /* Badge Shimmer */
+      @keyframes shimmer {
+        0% { transform: translateX(-150%) skewX(-20deg); }
+        30%, 100% { transform: translateX(250%) skewX(-20deg); }
+      }
+      .badge-shimmer::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 60%; height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+        animation: shimmer 3s infinite;
+        pointer-events: none;
+      }
+
+      /* Price Pulse */
+      @keyframes price-pulse {
+        0%, 100% { color: #e9c400; }
+        50% { color: #fff0c4; text-shadow: 0 0 8px rgba(255, 240, 196, 0.4); }
+      }
+      .price-animate { animation: price-pulse 2s ease-in-out infinite; }
+
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="selection:bg-primary-container selection:text-white bg-background">
+<!-- [1] NAVBAR -->
+<nav class="sticky top-0 w-full z-[100] bg-surface-container/60 backdrop-blur-xl flex justify-between items-center px-8 py-4">
+<div class="text-2xl font-black tracking-tighter text-red-500 italic font-['Epilogue'] uppercase">MangaShop</div>
+<div class="hidden md:flex items-center space-x-8 font-['Epilogue'] uppercase tracking-tight font-bold">
+<a class="text-red-500 border-b-2 border-red-500 pb-1" href="#">Thể Loại</a>
+<a class="text-white/70 hover:text-white transition-colors" href="#">Mới Nhất</a>
+<a class="text-white/70 hover:text-white transition-colors" href="#">Bán Chạy</a>
+<a class="text-white/70 hover:text-white transition-colors" href="#">Về Chúng Tôi</a>
+</div>
+<div class="flex items-center space-x-6 text-red-400">
+<span class="material-symbols-outlined cursor-pointer hover:text-red-400 transition-all duration-300 scale-95 active:scale-90">search</span>
+<div class="relative scale-95 active:scale-90 transition-transform cursor-pointer">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute -top-2 -right-2 bg-primary-container text-[10px] text-white font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+</div>
+<span class="material-symbols-outlined cursor-pointer hover:text-red-400 transition-all duration-300 scale-95 active:scale-90">person</span>
+</div>
+</nav>
+<!-- [2] HERO SECTION -->
+<section class="relative min-h-[90vh] flex items-center px-8 md:px-20 overflow-hidden reveal" id="hero">
+<div class="hero-gradient absolute inset-0 pointer-events-none z-0"></div>
+<!-- Speed Lines Layer -->
+<div class="absolute inset-0 pointer-events-none opacity-[0.05] z-0" style="background-image: repeating-linear-gradient(45deg, white, white 1px, transparent 1px, transparent 40px);"></div>
+<!-- Ambient Embers -->
+<div class="absolute inset-0 pointer-events-none z-10">
+<div class="ember absolute w-1 h-1 bg-primary rounded-full" style="bottom: 10%; left: 20%; animation-duration: 4s; animation-delay: 0.5s;"></div>
+<div class="ember absolute w-1 h-1 bg-red-400 rounded-full" style="bottom: 5%; left: 40%; animation-duration: 5s; animation-delay: 1.2s;"></div>
+<div class="ember absolute w-1 h-1 bg-orange-400 rounded-full" style="bottom: 15%; left: 60%; animation-duration: 3s; animation-delay: 0.2s;"></div>
+<div class="ember absolute w-1 h-1 bg-primary rounded-full" style="bottom: 8%; left: 80%; animation-duration: 6s; animation-delay: 2s;"></div>
+<div class="ember absolute w-1.5 h-1.5 bg-red-500 rounded-full" style="bottom: 12%; left: 35%; animation-duration: 4.5s; animation-delay: 1.8s;"></div>
+</div>
+<div class="grid md:grid-cols-2 gap-12 w-full z-20 relative">
+<div class="flex flex-col justify-center space-y-6">
+<h1 class="font-headline text-6xl md:text-8xl font-black leading-tight tracking-tighter text-on-surface">
+<span class="inline-block animate-fade-up" style="animation-delay: 0.1s">ĐỌC</span>
+<span class="inline-block animate-fade-up" style="animation-delay: 0.2s">ÍT</span>
+<span class="inline-block animate-fade-up" style="animation-delay: 0.3s">—</span> <br/>
+<span class="text-primary-container italic inline-block animate-fade-up" style="animation-delay: 0.4s">SỞ HỮU NHIỀU</span>
+</h1>
+<p class="text-xl text-on-surface-variant max-w-md font-body">
+                Truyện tranh manga chính hãng, tuyển chọn từ những nhà xuất bản hàng đầu, giao tận tay các nhà sưu tầm thực thụ.
+            </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline px-8 py-4 rounded-sm tracking-widest uppercase hover:brightness-110 transition-all pulse-btn">Khám Phá Ngay</button>
+<button class="border border-outline-variant text-on-surface font-headline px-8 py-4 rounded-sm tracking-widest uppercase hover:bg-white/5 transition-all">Xem Bán Chạy</button>
+</div>
+</div>
+<div class="relative flex items-center justify-center">
+<!-- Lighting Sparks -->
+<div class="absolute inset-0 pointer-events-none z-30">
+<div class="lightning absolute w-[1px] h-12 bg-white/40 left-[10%] top-[30%]" style="animation-delay: 0.2s;"></div>
+<div class="lightning absolute w-[1px] h-20 bg-blue-400/30 left-[5%] top-[45%]" style="animation-delay: 1.5s;"></div>
+<div class="lightning absolute w-[1px] h-10 bg-white/50 left-[15%] top-[60%]" style="animation-delay: 0.8s;"></div>
+</div>
+<!-- Cherry Blossom Petals -->
+<div class="absolute inset-0 pointer-events-none z-30 overflow-visible">
+<div class="blossom absolute w-3 h-2 bg-pink-300/40 rounded-full top-[-5%] right-[5%]" style="animation-duration: 6s; animation-delay: 0s;"></div>
+<div class="blossom absolute w-2 h-2 bg-pink-400/30 rounded-full top-[-10%] right-[15%]" style="animation-duration: 7.5s; animation-delay: 1.2s;"></div>
+<div class="blossom absolute w-3 h-1 bg-pink-200/50 rounded-full top-[-5%] right-[25%]" style="animation-duration: 5.5s; animation-delay: 2.5s;"></div>
+</div>
+<!-- Dust Particles -->
+<div class="absolute inset-0 pointer-events-none z-20">
+<div class="dust absolute w-1 h-1 bg-white/20 rounded-full left-[20%] top-[40%]" style="animation-duration: 5s;"></div>
+<div class="dust absolute w-0.5 h-0.5 bg-white/30 rounded-full left-[45%] top-[60%]" style="animation-duration: 7s;"></div>
+</div>
+<div class="absolute w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full"></div>
+<div class="flex space-x-[-4rem] floating relative z-10">
+<img class="w-48 md:w-64 aspect-[2/3] object-cover rounded-xl shadow-2xl rotate-[-12deg] z-10 border border-white/10" data-alt="Dynamic manga cover art" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8vXtM3-uzG3wjgNF9paYuV9pz8gp57C26W5Mt93rzEYogpO5RsPFYeDjZ-OfKs5ThFfO9bmaK8nM9RIWjaVzT8xe4QHIcs-nckWv6AWZ6fnXRsLZOkTEYIi4mwHLOMKi8WTK0B8r59-TOrgLN3Ib2Cinw0IqruBioxGksfHDZ15KNA61chKQEbQX0JqL64tFyjZVSVL_kwdFnkUln34Zf2_xEEXe4YWSTDKple6xV0whociIp-2DtIoPWz3xNogP_fTtb2rwzVIsA"/>
+<img class="w-48 md:w-64 aspect-[2/3] object-cover rounded-xl shadow-2xl z-20 border border-white/10" data-alt="Classic manga cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBmZsizOGBZW-gX8DK3AtEBgiax3rJAXIRmj7U08t56J3roCnUe1FhDSpYJHWAM5jhlVzRyjOftAgMBwluyUmMfe1411Y9CjzxIXx4F_rwX3Ch8w6eZftUgTj9VAx4QzpqK4bZ1mqI6JdlR3A-vrYkLJLpFVr23InSD1Ka2vwRIRgPJurHxzU908q78kKsTbCtLLSmdRfjP08HHkGfiT9hOmAIqixrMFQblHzeoAa73PNBSsBbcTYnqKx0PlK-y5cC0s6SQjSQ_n6i"/>
+<img class="w-48 md:w-64 aspect-[2/3] object-cover rounded-xl shadow-2xl rotate-[12deg] z-10 border border-white/10" data-alt="Modern seinen manga" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDinRQcMqYAziTQxNnHHroJqYudyyozU9RKukHdWiHfPd4SWF7JwWj8wLOSZtz0dvP3bi8UACy8-wG_5CetuQjem0ZVRukISmT18dwjKT0AnBbPpCw3zEWZf599O4MBEI6sP3rbESWZjP7OaqpAmFlSLqWLHHas0Rajc2NlJYL0AeXckckuPSqOQPVwnT-VCVJUjAYd0-I4J-oV5DL94WRHhjFneKeuMj4vaMYD7OpwMViet_283p78kbYmNY1SokMoOilJk3Twoh4f"/>
+</div>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full bg-surface-container-low py-4 border-y border-white/5 ticker-container z-40">
+<div class="ticker-content font-headline text-sm tracking-[0.2em] text-white/40 space-x-12">
+<span>FREE SHIP ĐƠN 299K · MANGA CHÍNH HÃNG · GIAO HÀNG TOÀN QUỐC · ĐỔI TRẢ 7 NGÀY · FREE SHIP ĐƠN 299K · MANGA CHÍNH HÃNG · GIAO HÀNG TOÀN QUỐC · ĐỔI TRẢ 7 NGÀY ·</span>
+</div>
+</div>
+</section>
+<!-- [3] FEATURED CATEGORIES -->
+<section class="py-24 px-8 md:px-20 reveal">
+<div class="relative inline-block mb-12">
+<div class="title-glow absolute left-1/2 top-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"></div>
+<h2 class="font-headline text-4xl tracking-tighter uppercase flex items-center relative z-10">
+<span class="w-12 h-1 bg-primary-container mr-4"></span> THỂ LOẠI
+        </h2>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-6 gap-4 relative z-10">
+<div class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-container-high cursor-pointer hover:ring-2 hover:ring-primary-container transition-all category-card">
+<img class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-500" data-alt="Action" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeNthoDyMA_mHooaq_gWj7PocmGXLX8TsxRGfGZq7wcYjNtX3GSFFmJV-xc7VRANnBz64MI6ix7x9nEOR0Xb0c7yyikBRzx4glGZqWXhguUsVEb2-n1QUDG_bRSCFNp1rgKA5pAVhh5gGI9UdM0YpqpXCKEHq2DbhB_HqFE-17FKUFpw17qoHZ6lYkTj7fxvzDUVIBXA7hO5oeNzj2vmJM92kpKMevcVR2gAXaiNNI6xiKJGLbyHQSF-kq_yl2UGrDLhcY-1sKWXOQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-headline uppercase tracking-widest text-sm md:text-base">Hành Động</div>
+</div>
+<div class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-container-high cursor-pointer hover:ring-2 hover:ring-primary-container transition-all category-card">
+<img class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-500" data-alt="Romance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdmrF76ATyqYixSN28OS1q4Hyro6PkBw_kyrjxPsJfM4wxZWI7EdfTxSi3i0dNGmQZg61tFQU2j6NvJwh-WrbPA82fSMgJZe6ZqsorGnardfLvZy9CKuqO9WpOhaO_ek5zy-oLBNXdVSftIvWFDPZ9abBenaxMwFGvPmg57er5LaB0A41XSg6u1pggWRMHaZBysGY7LY_JNSrRTLEC4brZPNCRzV4oiRUhovqahlr2vihJ3iP4zW15vdPlyyKHQvU8QZRPVoXIUpUY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-headline uppercase tracking-widest text-sm md:text-base">Tình Cảm</div>
+</div>
+<div class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-container-high cursor-pointer hover:ring-2 hover:ring-primary-container transition-all category-card">
+<img class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-500" data-alt="Horror" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApW_N9zTyrxCL0ZA-gz6S1Y6mCwsrsT91XQum3KcrTXqpe8os4YjX5N35gSQhJ_5xzaA-apuztyPDixgDzWhXQCBWssSRT_dqYRc1EaFW90Zl5zukVnzD1vBZNcBdAwEYRlpVwbQnZTZDTVlM_takUb14-9Ohb0Nsu8_mmnPJbIJUWw6lEZx6B_DjbSGxnecbV-3axJSqXK6wLOZZs74mwBMHrdfhvXaGEoeO1nuZbbBDuAEt7QhNwu-k-KKtirrresXxkFRvkxgQc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-headline uppercase tracking-widest text-sm md:text-base">Kinh Dị</div>
+</div>
+<div class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-container-high cursor-pointer hover:ring-2 hover:ring-primary-container transition-all category-card">
+<img class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-500" data-alt="Adventure" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSAIeciops5uKImNKC1s9-R8K1NI-NNHhvtkLhcBWJQff4zjdCcjDP8Fe6ISsELzGkrrdl0cYVRQHvuhQDjF1H7zKBLXlsp8Ofmw1pW53n8TE_Sa21dh0WMOj_-hnlNovEZVUTctibI0om_7qQIH6epmEasQ6bM_ULK-Pfj6Kt8H-0JhQzFYPCBtg1PA6P-QXWZPzh7GB2stj5ELU8jgYax-XeZXyjj-JH56yVUAXnlzKR6BnYS1Svy2kE8R8FHiGCDDogjhx_1ozM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-headline uppercase tracking-widest text-sm md:text-base">Phiêu Lưu</div>
+</div>
+<div class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-container-high cursor-pointer hover:ring-2 hover:ring-primary-container transition-all category-card">
+<img class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-500" data-alt="Sports" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEdb_BUltxcBx8DzTqZ32CUr_MnhrY_Xwscke8K95DtjQKe5qLwwbqXKflqF5BRPKg_3sn7QCz-x8-GwJUVEmyGAZ9YABSXkGbjA3kK3ZUXaeSd5JEh-HU-qguoDUFTyTinmibn9g7uaVsbGsqrJ5Awi4b451YXmJmxzTQKakfpcMD1iaCBwZKg4trERvxWBbt0-Vq1ueOWohoC5DXChHffBoaXdSRC5BGmT0ADKKFB3814qkrEnQCxx83HjhExJQoMh31030zk9xv"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-headline uppercase tracking-widest text-sm md:text-base">Thể Thao</div>
+</div>
+<div class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-container-high cursor-pointer hover:ring-2 hover:ring-primary-container transition-all category-card">
+<img class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-500" data-alt="Isekai" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEdgV7STyakP19QUyiruFrUkwQd5oA1X5NpWfqV8-pBmz-NAEuPV1wIezSs7dPW5vOpuOhb1lV6gMX-NPch1VJrfcLyUK8PvvGGeKy5V-BkBlJWn0pQBnPUiGEau6FIoPZKzhWyCaPuTvfMeAY0mR9ovnSrP47Ni7Loo0yDbhSvSOIYNpmP8GMMhGSZuIhfvPrCbpiviBT4Hx__THg-AIdK-_YjCBJ6QEJI-ldDF9iUIMXokp4IxI8_DmYW59TiNkiLFMoqdW8_GD_"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-headline uppercase tracking-widest text-sm md:text-base">Isekai</div>
+</div>
+</div>
+</section>
+<!-- [4] NEW ARRIVALS -->
+<section class="py-24 bg-surface-container-lowest px-8 md:px-20 reveal">
+<div class="flex justify-between items-end mb-12">
+<h2 class="font-headline text-4xl tracking-tighter uppercase">MỚI NHẤT <span class="text-primary-container">TUẦN NÀY</span></h2>
+<a class="font-label text-sm text-secondary uppercase tracking-widest border-b border-secondary pb-1" href="#">Xem tất cả</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Product Card 1 -->
+<div class="group bg-surface-container rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 category-card">
+<div class="relative aspect-[3/4] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Chainsaw Man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDulJSDxVGVZa6WlznBT4BRrzXTTDr9NIdml7nVuiBBHCdV29BYBRN7rFWYG3OR60aQUUzaaAeIi8uiZfG2k-hJqzNCgBKwR5uh0n_s_sipUFULDwxjaqBWaeDb6l-74sUpscPLMHmeTn2zfPBAUwbeTaZqX1MBIqLu-GAfPtkh_90FpAQmSnK_cCH5rKjJ3DMuOzw-6MKeZv0z-d717kRwVpVTekz2R8n-nBRagYXbAq5nR2qya2C7PRxSY_RLq4rXnn3HyxuMx6bK"/>
+<div class="absolute top-4 left-4 bg-primary-container text-white text-[10px] font-black px-3 py-1 uppercase rounded-sm badge-shimmer overflow-hidden">NEW</div>
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6">
+<button class="w-full bg-white text-black font-headline py-3 rounded-sm text-sm uppercase flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+<span>Thêm vào giỏ</span>
+</button>
+</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline text-xl mb-1 truncate">Chainsaw Man - Vol 12</h3>
+<p class="text-on-surface-variant text-sm mb-4">Tatsuki Fujimoto</p>
+<div class="flex items-center justify-between">
+<span class="text-secondary font-black text-lg price-animate">55.000đ</span>
+<div class="flex text-secondary-container">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold ml-1 text-on-surface">4.9</span>
+</div>
+</div>
+</div>
+</div>
+<!-- (Repeated Product Cards 2-4 for layout) -->
+<div class="group bg-surface-container rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 category-card">
+<div class="relative aspect-[3/4] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Jujutsu Kaisen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM3xWNu8wXY06vf35Cuf2fOmPhoi9-X-kE8lZyseNH55FQK0MOhFK8eQ_tJnjmuVdaFuoyWRUBKoSPudUtyEw1msys5vZ4TfNWi-g-rHl0EzQzbOL8oMw-rhKIpPxoLqBNQRYo3JmF863Aj4F36gd5omIBVp6YZ6Cmq4R_hI3YzALgjV6pHaL95EKFY9RiqHwucUuOAG0vREJa-2EJ6r1igbTKmqMTv6wrjDEy8-y8dPllwMB6TR0qIwQvE9gbvIF128z8Rnpa4swz"/>
+<div class="absolute top-4 left-4 bg-primary-container text-white text-[10px] font-black px-3 py-1 uppercase rounded-sm badge-shimmer overflow-hidden">NEW</div>
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6">
+<button class="w-full bg-white text-black font-headline py-3 rounded-sm text-sm uppercase flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+<span>Thêm vào giỏ</span>
+</button>
+</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline text-xl mb-1 truncate">Jujutsu Kaisen - 20</h3>
+<p class="text-on-surface-variant text-sm mb-4">Gege Akutami</p>
+<div class="flex items-center justify-between">
+<span class="text-secondary font-black text-lg price-animate">45.000đ</span>
+<div class="flex text-secondary-container">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold ml-1 text-on-surface">5.0</span>
+</div>
+</div>
+</div>
+</div>
+<div class="group bg-surface-container rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 category-card">
+<div class="relative aspect-[3/4] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Blue Lock" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9bRsesXK1GoMWSAPWeWKRNsFi4Wnb_BbvaBBYggYSi8_BvDMA1MoPcZJ7s-9oV1Lhz32ld8EBzYrg2sVhfO7sY1VAfCanStBEEuF0uSCIGUgnQt42Of7DvWUVF-LKZCUorXHrjHdea9UE_a1UB7iFxgzlFR63-A3MtknJdaHgRcbMz193_pMgq0860JbEtLd5DfubGZ4PhAhJQaM4ufOAh1ZDjKgFwCp1_XYLDXCvO_13uBYER5s6FMxyhUd5dpE_bPTVic3z-DLK"/>
+<div class="absolute top-4 left-4 bg-primary-container text-white text-[10px] font-black px-3 py-1 uppercase rounded-sm badge-shimmer overflow-hidden">NEW</div>
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6">
+<button class="w-full bg-white text-black font-headline py-3 rounded-sm text-sm uppercase flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+<span>Thêm vào giỏ</span>
+</button>
+</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline text-xl mb-1 truncate">Blue Lock - Vol 15</h3>
+<p class="text-on-surface-variant text-sm mb-4">Muneyuki Kaneshiro</p>
+<div class="flex items-center justify-between">
+<span class="text-secondary font-black text-lg price-animate">50.000đ</span>
+<div class="flex text-secondary-container">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold ml-1 text-on-surface">4.8</span>
+</div>
+</div>
+</div>
+</div>
+<div class="group bg-surface-container rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 category-card">
+<div class="relative aspect-[3/4] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Spy x Family" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQg0DT1InUqmXw9-LnXZ0l-0EtzFvyM3z5qjKxaSlVSp22BqMmBKKmzIpteMivOmI_e_8KWK9OhBCNhJjHUENzgLUEQwlWjOL8nckdueDqKdFubOaLCaktcs2ZGN-tj_05rGUtqfG1y8IkA7mw0tAvJmW_k-s5gFiqatXiBZefU8XehVZX_Qg_teZWMbzLrah1usTn2IM50ETRZUwu9bJ7k1yFo8LyzJx2-AzeRsX9C9p8jrvLaOCnPv6FZn9uxsEbviZj-eANCvMG"/>
+<div class="absolute top-4 left-4 bg-primary-container text-white text-[10px] font-black px-3 py-1 uppercase rounded-sm badge-shimmer overflow-hidden">NEW</div>
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6">
+<button class="w-full bg-white text-black font-headline py-3 rounded-sm text-sm uppercase flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+<span>Thêm vào giỏ</span>
+</button>
+</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline text-xl mb-1 truncate">Spy x Family - Vol 9</h3>
+<p class="text-on-surface-variant text-sm mb-4">Tatsuya Endo</p>
+<div class="flex items-center justify-between">
+<span class="text-secondary font-black text-lg price-animate">60.000đ</span>
+<div class="flex text-secondary-container">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold ml-1 text-on-surface">4.9</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- [5] BESTSELLERS -->
+<section class="py-24 px-8 md:px-20 overflow-hidden reveal">
+<h2 class="font-headline text-4xl mb-12 tracking-tighter uppercase"><span class="text-secondary-container">#1</span> BÁN CHẠY NHẤT</h2>
+<div class="flex space-x-8 overflow-x-auto pb-8 snap-x no-scrollbar">
+<!-- Best Seller 1 -->
+<div class="flex-none w-80 snap-start group cursor-pointer category-card">
+<div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-4">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="One Piece" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7W40XCsV-GNL6e-T6-gd5jhIwefehcn1I0w1I1NS3QyL3mJwOr4yFInpl9vMJs_2A_5OF3OihgHRG9SO0W9n-n-1qy-9HYtPIBfLQO7ui_Oqls9Kd6-7mtiG0IJM6ua8o8xjeFyWbk1MXfTFT8-P9BNM9-nU_jj0LLmCWoCs_TKyHSJb3srN1iMABpK97G0bL016YY9ohPa9jKzq9BtBqQFX3m0_itA4tNr_bQC5SjjzVsetSkxoxAIfzK8_G_eLgtVY6c0xha_B2"/>
+<div class="absolute top-0 left-0 bg-secondary-container text-on-secondary-container font-headline text-xs px-4 py-2 uppercase tracking-tighter badge-shimmer overflow-hidden">Hạng 1</div>
+</div>
+<h3 class="font-headline text-2xl group-hover:text-primary transition-colors">One Piece - Tập 100</h3>
+<p class="text-on-surface-variant">Eiichiro Oda</p>
+<p class="text-secondary font-black text-xl mt-2 price-animate">120.000đ</p>
+</div>
+<!-- Best Seller 2 -->
+<div class="flex-none w-80 snap-start group cursor-pointer category-card">
+<div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-4">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Demon Slayer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4N0n3JSpDbJcw194ABa5MV4QSAn4dhRojC1LkDAMIRqGUNYesS-Yf_JwKDhnQZ9z9RRpzy4w9-sC_PkTgQGEa6L7hXQVH7gQGf2JVMA7jNc3h61jYlw9AYmzDLZAZsk-IT6IEovDpRkgjR3WltxqU-oQ5HQUil58tY5NKxNOKS0w9nYkwBPIr5dYnuXtdmtR7ViOiW1rmT-8WlZYzTq8e3fDXKc1TxtGTZWuY2VW63oTxQ4ZqV2m4cVxR2NL-5bRMD8RYawLqKsBU"/>
+<div class="absolute top-0 left-0 bg-secondary-container text-on-secondary-container font-headline text-xs px-4 py-2 uppercase tracking-tighter badge-shimmer overflow-hidden">Hạng 2</div>
+</div>
+<h3 class="font-headline text-2xl group-hover:text-primary transition-colors">Demon Slayer - Vol 23</h3>
+<p class="text-on-surface-variant">Koyoharu Gotouge</p>
+<p class="text-secondary font-black text-xl mt-2 price-animate">95.000đ</p>
+</div>
+<!-- Best Seller 3 -->
+<div class="flex-none w-80 snap-start group cursor-pointer category-card">
+<div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-4">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Akira" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwH57juD0gegfILSE56-XliBMOxrhQV02t2VVju_AWZRsn80BMJ0Ddw3_PER7BvDJHgG02XwoTD84e1QgRpCmdhl3joPPtFwVmletYnBAowPhMiC013CoVYcH8clvMPg1YWfoKjBlHearY4Ur8ShqaygdJNc5UlbgatY2OEdiVuibbm4emEtWRdioFSsm9UciUhel9WmL8q3bM7F_N15DD9irmj7U5w1ImaNZ3IjyYd4hkh7OmtFAyKbAsm_e7ak8wVPBXtsRId83P"/>
+<div class="absolute top-0 left-0 bg-secondary-container text-on-secondary-container font-headline text-xs px-4 py-2 uppercase tracking-tighter badge-shimmer overflow-hidden">Hạng 3</div>
+</div>
+<h3 class="font-headline text-2xl group-hover:text-primary transition-colors">Akira - Special Edition</h3>
+<p class="text-on-surface-variant">Katsuhiro Otomo</p>
+<p class="text-secondary font-black text-xl mt-2 price-animate">350.000đ</p>
+</div>
+</div>
+</section>
+<!-- [6] HOW IT WORKS -->
+<section class="py-32 bg-surface-container-low px-8 md:px-20 relative overflow-hidden reveal">
+<div class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none font-headline text-[15rem] leading-none select-none z-0">
+        MANGA
+    </div>
+<h2 class="font-headline text-4xl mb-24 tracking-tighter uppercase text-center relative z-10">ĐẶT HÀNG DỄ NHƯ <span class="text-primary-container italic">ĐỌC TRUYỆN</span></h2>
+<div class="relative grid md:grid-cols-3 gap-16 md:gap-8 z-10">
+<!-- Step 1 -->
+<div class="relative flex flex-col items-center text-center">
+<div class="absolute -top-12 -left-4 font-headline text-8xl text-primary opacity-20 italic">01</div>
+<div class="w-20 h-20 bg-surface-container-highest rounded-full flex items-center justify-center mb-6 shadow-xl border border-white/5">
+<span class="material-symbols-outlined text-3xl text-primary">menu_book</span>
+</div>
+<h3 class="font-headline text-2xl mb-2">Chọn truyện yêu thích</h3>
+<p class="text-on-surface-variant px-8">Hàng ngàn tựa sách từ mọi thể loại đang chờ bạn khám phá.</p>
+</div>
+<!-- Step 2 -->
+<div class="relative flex flex-col items-center text-center">
+<div class="absolute -top-12 -left-4 font-headline text-8xl text-primary opacity-20 italic">02</div>
+<div class="w-20 h-20 bg-surface-container-highest rounded-full flex items-center justify-center mb-6 shadow-xl border border-white/5">
+<span class="material-symbols-outlined text-3xl text-primary">payments</span>
+</div>
+<h3 class="font-headline text-2xl mb-2">Đặt hàng &amp; Thanh toán</h3>
+<p class="text-on-surface-variant px-8">Nhanh chóng, bảo mật với nhiều phương thức linh hoạt.</p>
+</div>
+<!-- Step 3 -->
+<div class="relative flex flex-col items-center text-center">
+<div class="absolute -top-12 -left-4 font-headline text-8xl text-primary opacity-20 italic">03</div>
+<div class="w-20 h-20 bg-surface-container-highest rounded-full flex items-center justify-center mb-6 shadow-xl border border-white/5">
+<span class="material-symbols-outlined text-3xl text-primary">local_shipping</span>
+</div>
+<h3 class="font-headline text-2xl mb-2">Nhận sách tận nhà</h3>
+<p class="text-on-surface-variant px-8">Giao hàng siêu tốc và đóng gói cẩn thận từng trang sách.</p>
+</div>
+</div>
+</section>
+<!-- [7] TESTIMONIALS -->
+<section class="py-24 px-8 md:px-20 reveal">
+<h2 class="font-headline text-4xl mb-12 tracking-tighter uppercase">MANGAKA NÓI GÌ <br/><span class="text-primary-container">VỀ CHÚNG TÔI</span></h2>
+<div class="grid md:grid-cols-3 gap-8">
+<div class="bg-surface-container-high p-8 rounded-xl border-t-2 border-primary-container">
+<div class="flex items-center space-x-4 mb-6">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Reviewer Portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHTgw5To-KdL2TOfA1Wag4efcdqdNrFl6nQvBu48fV12OxeYpkh5sJ8dsLMEdG7-rQusGpDsc1opOAEhehElPHYGf7KK_0aL82_afkLWS335Sq5l3WTQdHW7UAIv5QXysq-LSZvI7G5T76A4pSSBM2oNAhNNxPGRbTIf4mhRZwtowEL6JvOYBfLZApdBBBIoC21nMPzzXoGuvrQVHrNl2tDZCJpK4J58L5ecWj04O9QBZT3KWOGuGKE4jHsu6rcIjEyR9AW9ftd_SU"/>
+<div>
+<h4 class="font-bold">Minh Triết</h4>
+<div class="flex text-secondary-container">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+</div>
+<p class="text-on-surface-variant italic">"Shop đóng gói rất kỹ, có cả bọc chống sốc và bìa carton bảo vệ góc sách. Cảm ơn MangaShop!"</p>
+</div>
+</div>
+</section>
+<!-- [8] FOOTER -->
+<footer class="bg-surface-container-lowest border-t border-white/5 py-12 px-8 md:px-20 reveal">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+<div>
+<div class="text-2xl font-black tracking-tighter text-red-500 italic uppercase mb-2">MangaShop</div>
+<p class="text-on-surface-variant max-w-xs">Nơi hội tụ của những tâm hồn yêu truyện tranh Nhật Bản.</p>
+</div>
+<div class="flex space-x-12">
+<div class="flex flex-col space-y-2">
+<span class="font-bold uppercase text-xs tracking-widest text-primary-container mb-2">Hỗ Trợ</span>
+<a class="text-on-surface-variant hover:text-white transition-colors" href="#">Vận chuyển</a>
+<a class="text-on-surface-variant hover:text-white transition-colors" href="#">Hoàn trả</a>
+</div>
+<div class="flex flex-col space-y-2">
+<span class="font-bold uppercase text-xs tracking-widest text-primary-container mb-2">Liên Hệ</span>
+<a class="text-on-surface-variant hover:text-white transition-colors" href="#">Facebook</a>
+<a class="text-on-surface-variant hover:text-white transition-colors" href="#">Instagram</a>
+</div>
+</div>
+</div>
+<div class="mt-12 pt-8 border-t border-white/5 text-center text-on-surface-variant text-xs">
+        © 2024 MangaShop. All rights reserved. Cinematic Collector Edition.
+    </div>
+</footer>
+<script>
+    // Critical Visibility Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    // Stop observing once revealed to ensure it stays visible
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+            // Safety fallback: if section is in viewport immediately
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                el.classList.add('revealed');
+            }
+        });
+        
+        // Initial force reveal for hero just in case
+        const hero = document.getElementById('hero');
+        if (hero) hero.classList.add('revealed');
+    });
+
+    // Handle scroll-driven reveal fallback if IntersectionObserver is slow
+    window.addEventListener('scroll', () => {
+        document.querySelectorAll('.reveal:not(.revealed)').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.9) {
+                el.classList.add('revealed');
+            }
+        });
+    }, { passive: true });
+</script>
+</body></html>
+
+//////////////
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#ff535b",
+                        "secondary-fixed": "#ffe171",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#39383e",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#00504a",
+                        "on-primary-container": "#5b000e",
+                        "on-primary": "#680011",
+                        "on-surface": "#e4e1e9",
+                        "on-primary-fixed-variant": "#92001c",
+                        "on-tertiary-fixed": "#00201d",
+                        "tertiary-fixed": "#8cf4e8",
+                        "surface-tint": "#ffb3b1",
+                        "inverse-primary": "#bb152c",
+                        "primary": "#ffb3b1",
+                        "on-tertiary-container": "#00302c",
+                        "on-surface-variant": "#e4bebc",
+                        "secondary-fixed-dim": "#e9c400",
+                        "tertiary": "#6fd8cc",
+                        "on-primary-fixed": "#410007",
+                        "inverse-on-surface": "#303036",
+                        "on-secondary": "#3b2f00",
+                        "on-tertiary": "#003733",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#131318",
+                        "tertiary-fixed-dim": "#6fd8cc",
+                        "primary-fixed": "#ffdad8",
+                        "surface-container-low": "#1b1b20",
+                        "on-background": "#e4e1e9",
+                        "surface-container-highest": "#35343a",
+                        "surface-container-high": "#2a292f",
+                        "inverse-surface": "#e4e1e9",
+                        "secondary": "#fff0c4",
+                        "surface-container": "#1f1f25",
+                        "tertiary-container": "#2fa096",
+                        "outline-variant": "#5b403f",
+                        "on-secondary-fixed": "#221b00",
+                        "surface-container-lowest": "#0e0e13",
+                        "secondary-container": "#fad100",
+                        "surface": "#131318",
+                        "on-secondary-container": "#6d5a00",
+                        "error-container": "#93000a",
+                        "surface-variant": "#35343a",
+                        "background": "#131318",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "on-secondary-fixed-variant": "#554600",
+                        "outline": "#ab8987"
+                    },
+                    fontFamily: {
+                        "headline": ["Epilogue"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, rgba(250,209,0,0) 0%, rgba(255,240,196,0.4) 50%, rgba(250,209,0,0) 100%);
+            background-size: 200% 100%;
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="sticky top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl shadow-2xl shadow-red-950/20">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-black tracking-tighter text-red-600 dark:text-red-500 font-headline uppercase">THE CINEMATIC COLLECTOR</div>
+<div class="hidden md:flex items-center gap-10">
+<a class="text-slate-300 hover:text-white transition-colors font-headline tracking-tight uppercase font-bold" href="#">Thể Loại</a>
+<a class="text-slate-300 hover:text-white transition-colors font-headline tracking-tight uppercase font-bold" href="#">Mới Nhất</a>
+<a class="text-slate-300 hover:text-white transition-colors font-headline tracking-tight uppercase font-bold" href="#">Bán Chạy</a>
+<a class="text-slate-300 hover:text-white transition-colors font-headline tracking-tight uppercase font-bold" href="#">Về Chúng Tôi</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="hover:text-red-400 transition-all duration-300 scale-95 active:scale-90 flex items-center">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<button class="hover:text-red-400 transition-all duration-300 scale-95 active:scale-90 flex items-center">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="max-w-screen-2xl mx-auto px-8 py-12">
+<!-- Breadcrumb -->
+<nav class="mb-12 flex items-center gap-3 text-sm font-medium tracking-wide">
+<a class="text-slate-500 hover:text-primary transition-colors" href="/">Home</a>
+<span class="material-symbols-outlined text-xs text-slate-700">chevron_right</span>
+<a class="text-slate-500 hover:text-primary transition-colors" href="#">Thể Loại</a>
+<span class="material-symbols-outlined text-xs text-slate-700">chevron_right</span>
+<span class="text-primary-fixed">One Piece</span>
+</nav>
+<!-- Product Hero Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24 items-start mb-24">
+<!-- Left Column: Media -->
+<div class="relative group">
+<!-- Ambience Effects -->
+<div class="absolute -inset-10 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
+<div class="absolute top-0 left-0 w-full h-full pointer-events-none z-10 overflow-hidden">
+<!-- Static representation of particle effects as requested -->
+<div class="absolute top-1/4 left-1/4 w-1 h-1 bg-primary rounded-full shadow-[0_0_15px_#ffb3b1]"></div>
+<div class="absolute bottom-1/3 right-1/4 w-1 h-1 bg-primary rounded-full shadow-[0_0_20px_#ffb3b1]"></div>
+<div class="absolute top-1/2 right-1/3 w-2 h-0.5 bg-secondary rotate-45"></div>
+<div class="absolute top-10 right-20 w-3 h-3 bg-red-400/20 rounded-full blur-sm"></div>
+</div>
+<div class="relative flex flex-col gap-6">
+<!-- Main Image with Zoom -->
+<div class="aspect-[2/3] w-full overflow-hidden rounded-xl bg-surface-container shadow-2xl relative">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Premium close-up of a manga volume cover featuring vibrant Japanese comic art with a pirate captain character in a dynamic pose" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABrdy30zp56PlMbJ_bkawDRofKeldu2M021HPPnWUVcZ9cy24LutLVcgoFWy6JdDKV-5BRStRC72jmoXfd8gonp95zx3zf2ezdKKdY2kN-pzrjmoaS5VsUqbjBVMpBGX-H6Qa8-rE8H6n4nIZjeMEjPozAQfVFiZDFFg2sbE5Vs5gYGdJhUXZSBSUtD9aAM04hF1C4pZ14KnOfZ2rOgUjuf1z9CI_ixsBZCQ_vtYBqYFbkja-Hb7SxsPVp78O1cc487xPRATZ3Lwqm"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim/40 to-transparent"></div>
+</div>
+<!-- Thumbnails -->
+<div class="grid grid-cols-4 gap-4">
+<div class="aspect-square rounded-lg overflow-hidden border-2 border-primary-container bg-surface-container-high cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="Macro detail of manga ink strokes on high quality paper showing texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiNB2N5HMhzqcgBbTsaneIEGlUyKcCbSvkZQMy_xcm5tsqePOJibGpEocu3thHgYaOhJiZ0BL_Z5aRQUSOE2v1JbTFTKAgXvGLXhg66Vr7cCrCCdaNd_cPh-z2locF31HEUqnyvUM7AEuEBlKQlmN_Sd3okxpN-VKKJeP62iM_pRPvDmu6shF8ds9yQDzIT0JC8-R36wAoA2Wi0WQXdE9qFp0V51_S7eRJyCJMTx-j-iTCWqwxKKo1S1naEIu5__TSDi7nA8CD5tuV"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-container-high cursor-pointer hover:border-2 hover:border-primary transition-all">
+<img class="w-full h-full object-cover" data-alt="Side profile view of multiple manga book spines stacked together" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBks4fnrv3gQSZgDIcU0Yr3GzqIydL-nWfEhqOAt3i72NC94W-XyD-CnWXgyz6nYaVQGzlGs8L7dmpLmhEvZpElWfr5qkuCMtnLhqYH-Dj2kotQTNtczu3Rny1djqCGiEuJKtN7En2XV-7QwTJlqov00It_atbrv-IXFsJGiqaULvWadWUQPWpks6RE8ArBncE77oxyvIjQ3dS4uerleOFj_rr3i9pBQGyDAqefRHE7LmwUrJlhSHXzUTy3EqEklB8xRYoTbRBmB_Kh"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-container-high cursor-pointer hover:border-2 hover:border-primary transition-all">
+<img class="w-full h-full object-cover" data-alt="Interior page of a black and white manga panel showing action scenes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBeeTXe6ejuVgBTdm3Z0xSDJbwcs-rDw8lx4KfKK5AhA0hXNbkPTpTmTE4gPNOFqb8KkyaXTScWnPbRKs8chnPtofT01BJtsO8MYOE1a0OxoliVM2G6BZMvExKeWFmbRT3X4bKJv5QjjVbZBfJTXw1MSPlkaUDPO5-8BIPt-Y_5hVj7cJxsXfo0_dFpGTToM9LlFgFyyThQtVeFakyGKMGlgxGGhxlOQ-CMuzI01RfYhxk2MKOwdTW-F7hHY-IKPNueJbVeQvNshgH"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-container-high cursor-pointer hover:border-2 hover:border-primary transition-all">
+<img class="w-full h-full object-cover" data-alt="Close up of a book corner with premium matte finish and sharp edges" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqcvp0vpdnxC613rujqz3W7zg-fj-gQt7n50OMICsUWFIIYrhzktcuIajTtxps989pvyyuejWsLgnYXUJ3SFXJaaILL4HABoZpruWi2GCgAVOQLOUJvy5C844-Q0D6keA58g62xS74y2Jd5aw9u9grH7u3X2ELExTfTMGFhJw9h65MM4ep-DyFLiXMAoyHH0R4InV4AHt_fyYRGVZznNrmb83lrNrD_MDeN4WRp4wA7zc9CwAA2j6LMkMnJ0EgUCZVxjq5OQupi5a7"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Info & Actions -->
+<div class="flex flex-col">
+<div class="mb-2">
+<span class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-on-secondary-fixed text-xs font-bold uppercase rounded-full tracking-widest">
+                        Collector Edition
+                    </span>
+</div>
+<h1 class="text-5xl lg:text-7xl font-black font-headline text-on-surface mb-4 leading-tight uppercase tracking-tighter">
+                    One Piece - Tập 100
+                </h1>
+<div class="flex flex-wrap items-center gap-6 mb-8">
+<div class="flex flex-col">
+<span class="text-xs uppercase text-slate-500 font-bold tracking-widest">Tác Giả</span>
+<span class="text-lg font-semibold text-on-surface-variant">Eiichiro Oda</span>
+</div>
+<div class="w-px h-8 bg-slate-800"></div>
+<div class="flex flex-col">
+<span class="text-xs uppercase text-slate-500 font-bold tracking-widest">Nhà Xuất Bản</span>
+<span class="text-lg font-semibold text-on-surface-variant">Kim Đồng</span>
+</div>
+</div>
+<div class="flex items-center gap-4 mb-8">
+<div class="flex gap-1 text-secondary-fixed-dim">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-on-surface-variant font-medium">5.0 (128 reviews)</span>
+</div>
+<div class="flex gap-3 mb-12">
+<span class="px-4 py-1.5 rounded-sm border border-outline-variant/30 text-sm font-bold uppercase tracking-tight text-slate-300">Hành động</span>
+<span class="px-4 py-1.5 rounded-sm border border-outline-variant/30 text-sm font-bold uppercase tracking-tight text-slate-300">Phiêu lưu</span>
+</div>
+<!-- Price & Status -->
+<div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant/10 mb-10">
+<div class="flex justify-between items-end mb-8">
+<div>
+<span class="text-xs uppercase text-slate-500 font-bold tracking-widest block mb-1">Giá Bán Niêm Yết</span>
+<span class="text-5xl font-black font-headline text-secondary-fixed">120.000đ</span>
+</div>
+<div class="flex items-center gap-2 mb-2">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+</span>
+<span class="text-green-400 font-bold uppercase text-xs tracking-widest">Còn 12 cuốn</span>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-6">
+<div class="flex items-center bg-surface-container-highest rounded-sm border border-outline-variant/20">
+<button class="w-12 h-12 flex items-center justify-center hover:text-primary transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<input class="w-12 bg-transparent border-none text-center font-bold focus:ring-0" type="text" value="1"/>
+<button class="w-12 h-12 flex items-center justify-center hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<button class="flex-1 h-14 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-black uppercase tracking-widest text-sm rounded-sm shadow-[0_0_20px_rgba(255,83,91,0.3)] hover:shadow-[0_0_30px_rgba(255,83,91,0.5)] transition-all">
+                                Thêm Vào Giỏ
+                            </button>
+</div>
+<button class="w-full h-14 relative overflow-hidden bg-secondary-container text-on-secondary-fixed font-black uppercase tracking-widest text-sm rounded-sm">
+<span class="relative z-10">Mua Ngay</span>
+<div class="shimmer absolute inset-0 animate-[shimmer_2s_infinite]"></div>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Tabs Section -->
+<div class="mb-24">
+<div class="flex gap-12 border-b border-slate-900 mb-12">
+<button class="pb-4 text-xl font-black font-headline uppercase tracking-tighter text-primary border-b-2 border-primary">Mô Tả</button>
+<button class="pb-4 text-xl font-black font-headline uppercase tracking-tighter text-slate-600 hover:text-on-surface transition-colors">Thông Tin</button>
+<button class="pb-4 text-xl font-black font-headline uppercase tracking-tighter text-slate-600 hover:text-on-surface transition-colors">Đánh Giá</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Staggered Description Cards -->
+<div class="md:col-span-2 space-y-8">
+<div class="p-8 bg-surface-container rounded-xl border-l-4 border-primary">
+<p class="text-on-surface-variant leading-relaxed text-lg italic">
+                            "Khi những giấc mơ vĩ đại hội tụ tại vùng biển chết chóc nhất thế giới, chương thứ 100 của sử thi vĩ đại nhất mọi thời đại chính thức bắt đầu..."
+                        </p>
+</div>
+<div class="p-8 bg-surface-container rounded-xl">
+<h3 class="text-2xl font-bold mb-4 uppercase font-headline tracking-tight text-on-surface">Huyền Thoại Tiếp Diễn</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                            Trận chiến tại Onigashima đang tiến đến hồi kết cực kỳ gay cấn. Luffy cùng các đồng đội trong Thế hệ Tồi tệ nhất đối đầu trực diện với hai Tứ hoàng Kaido và Big Mom. Số phận của Wano quốc và toàn bộ thế giới hải tặc đang nằm trên bàn cân. Tập 100 đánh dấu một cột mốc lịch sử không chỉ cho One Piece mà còn cho cả ngành công nghiệp Manga toàn cầu.
+                        </p>
+</div>
+</div>
+<div class="space-y-6">
+<div class="p-6 bg-surface-container-low rounded-xl border border-outline-variant/10">
+<h4 class="text-sm uppercase font-bold text-slate-500 tracking-widest mb-4">Chi tiết ấn bản</h4>
+<ul class="space-y-4">
+<li class="flex justify-between border-b border-slate-900 pb-2">
+<span class="text-slate-400">Khổ sách</span>
+<span class="font-medium">11.3 x 17.6 cm</span>
+</li>
+<li class="flex justify-between border-b border-slate-900 pb-2">
+<span class="text-slate-400">Số trang</span>
+<span class="font-medium">200</span>
+</li>
+<li class="flex justify-between border-b border-slate-900 pb-2">
+<span class="text-slate-400">Hình thức</span>
+<span class="font-medium">Bìa mềm</span>
+</li>
+<li class="flex justify-between">
+<span class="text-slate-400">Trọng lượng</span>
+<span class="font-medium">150g</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- Related Products -->
+<div>
+<div class="flex justify-between items-end mb-10">
+<h2 class="text-4xl font-black font-headline uppercase tracking-tighter">Sản Phẩm Tương Tự</h2>
+<div class="flex gap-4">
+<button class="w-12 h-12 rounded-full border border-slate-800 flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">west</span>
+</button>
+<button class="w-12 h-12 rounded-full border border-slate-800 flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">east</span>
+</button>
+</div>
+</div>
+<div class="flex overflow-x-auto gap-8 pb-8 no-scrollbar snap-x">
+<!-- Book Card 1 -->
+<div class="flex-none w-[280px] snap-start group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4 relative bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Cover of a fantasy manga with intricate detail and dark aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBubIxV56HHevcRwYuAeEFeFUDCLjYUtLURW90QSFTQfgZ4Qiox5QFkZjsUEmNzLIZRT1Vm8EpsC4Xkp4dBx5vBh-Ii1gkXR30grXwf1-Wdq-zuZfZfCWZl5-bTli6wdZfZWXMIvwuRpktb6Dztm14xEuBLsmTQoEkAiml6Pe43DZttu5cLH1XvjXNpF0luW_-pvytQ1Z-KOttGXKp5WXNNbcfahhFOVYhBY55yL9ywUG6OpHJ1szztzvtSGGs5RkwlfSdbTxbeBa5D"/>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="px-4 py-2 bg-on-surface text-surface font-bold text-xs uppercase tracking-widest">Xem chi tiết</span>
+</div>
+</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-1">One Piece - Tập 99</h3>
+<p class="text-secondary-fixed font-black">115.000đ</p>
+</div>
+<!-- Book Card 2 -->
+<div class="flex-none w-[280px] snap-start group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4 relative bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Vibrant manga cover showing high energy battle scenes and colorful characters" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcuztCZ3R-wISKYETBi4fGqMz7o1ZF8I6TP3yAK8jujLh36BR0iG8Y6ldLnd2QcU6dzXSU5WXJPgt9srb7tl0SKDkCGya4a7fvRF6I4BnxOhm-ykgyFCQApSfyHQBg9xKWzVeije9Hn-XtvnVlxwJq0QNP1LzBJ4QgEeDTjdgnvm5ofjiW_4CCdDZd2drnqkz03XrSN3dDgN4-WhmLb0oTFOrhUbRl93_N0M9_Scq9RVznk6-QaatL-QOIzr7hKxSF0SkEeh73mgAm"/>
+</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-1">One Piece - Tập 98</h3>
+<p class="text-secondary-fixed font-black">115.000đ</p>
+</div>
+<!-- Book Card 3 -->
+<div class="flex-none w-[280px] snap-start group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4 relative bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Manga collection on a shelf with cinematic lighting and soft bokeh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC29YxL8eAwH5zwyINd6znv5us9z8I3mPrP4-AP_16P-Xu63BC-OBjYYbPe1fMZrAv1bbfCAukMp-gAMVXz44Pxkn7FWXUfU-kDycHQZ8CXy3Z3XT1d3YjUoi1Jft-J4ErjTgkvr70KvMftHsnELy6UknV5RGvhFkzTv8a8hIBlY8VngzQlWScAxN8naumAycBKHdM2OREwf6ZuwJ-uzi_vGi4PAAElN_r8CNRv2nqhkqvStQPqqUemc6nujjTfZu9PiyywKbPn5YF1"/>
+</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-1">One Piece - Tập 97</h3>
+<p class="text-secondary-fixed font-black">115.000đ</p>
+</div>
+<!-- Book Card 4 -->
+<div class="flex-none w-[280px] snap-start group">
+<div class="aspect-[2/3] rounded-xl overflow-hidden mb-4 relative bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Close up of a stylized Japanese graphic novel cover with gold foil accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgmOk04q0sQxntRMpOFYJ22dcouufUb7DHolfZh1ZQCa6isWf-_DDGA8hfkznmRgcQ2U4GXQAUtEslqTrAvGV3VVK-TLVrwQN6poeA43Z5hQ4JmONWY__O9zyGkIzM7MtF8MKfHHbjJ7bUJFSAdb3dmRyY2-gU5YqdlMYD8C5PTSSeHdyHJMlme74Wwu-5-ZT1SB7NJkb4sDUVkPLX68h67cLt91coaZiEPHHBdMmvZR0ajqgb30Oz20SfK1mQctmMYVklcz3nfgKW"/>
+</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-1">One Piece - Tập 96</h3>
+<p class="text-secondary-fixed font-black">115.000đ</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full pt-20 pb-10 px-8 bg-slate-950">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-screen-2xl mx-auto border-t border-slate-900 pt-16">
+<div class="col-span-1 md:col-span-2">
+<div class="text-xl font-black text-red-600 font-headline uppercase mb-6">THE CINEMATIC COLLECTOR</div>
+<p class="text-slate-500 max-w-md font-body text-sm tracking-wide leading-loose">
+                    Điểm đến hàng đầu cho những nhà sưu tầm Manga chính hiệu. Chúng tôi tuyển chọn những ấn bản đẹp nhất, chất lượng nhất từ những vũ trụ truyện tranh huyền thoại.
+                </p>
+</div>
+<div>
+<h4 class="text-red-500 font-headline font-bold uppercase mb-6 tracking-widest text-xs">Cửa Hàng</h4>
+<ul class="space-y-4">
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline-offset-8 font-body text-sm" href="#">Điều Khoản</a></li>
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline-offset-8 font-body text-sm" href="#">Bảo Mật</a></li>
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline-offset-8 font-body text-sm" href="#">Vận Chuyển</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-red-500 font-headline font-bold uppercase mb-6 tracking-widest text-xs">Kết Nối</h4>
+<ul class="space-y-4">
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline-offset-8 font-body text-sm" href="#">Facebook</a></li>
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline-offset-8 font-body text-sm" href="#">Instagram</a></li>
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline-offset-8 font-body text-sm" href="#">Liên Hệ</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto mt-20 pt-8 border-t border-slate-900/50 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-slate-500 text-sm tracking-wide">© 2024 THE CINEMATIC COLLECTOR. ALL RIGHTS RESERVED.</div>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-slate-700">payments</span>
+<span class="material-symbols-outlined text-slate-700">local_shipping</span>
+<span class="material-symbols-outlined text-slate-700">verified_user</span>
+</div>
+</div>
+</footer>
+<style>
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>
+///////////////
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GIỎ HÀNG - THE CINEMATIC COLLECTOR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary-container": "#ff535b",
+                "secondary-fixed": "#ffe171",
+                "error": "#ffb4ab",
+                "surface-bright": "#39383e",
+                "on-error": "#690005",
+                "on-tertiary-fixed-variant": "#00504a",
+                "on-primary-container": "#5b000e",
+                "on-primary": "#680011",
+                "on-surface": "#e4e1e9",
+                "on-primary-fixed-variant": "#92001c",
+                "on-tertiary-fixed": "#00201d",
+                "tertiary-fixed": "#8cf4e8",
+                "surface-tint": "#ffb3b1",
+                "inverse-primary": "#bb152c",
+                "primary": "#ffb3b1",
+                "on-tertiary-container": "#00302c",
+                "on-surface-variant": "#e4bebc",
+                "secondary-fixed-dim": "#e9c400",
+                "tertiary": "#6fd8cc",
+                "on-primary-fixed": "#410007",
+                "inverse-on-surface": "#303036",
+                "on-secondary": "#3b2f00",
+                "on-tertiary": "#003733",
+                "on-error-container": "#ffdad6",
+                "surface-dim": "#131318",
+                "tertiary-fixed-dim": "#6fd8cc",
+                "primary-fixed": "#ffdad8",
+                "surface-container-low": "#1b1b20",
+                "on-background": "#e4e1e9",
+                "surface-container-highest": "#35343a",
+                "surface-container-high": "#2a292f",
+                "inverse-surface": "#e4e1e9",
+                "secondary": "#fff0c4",
+                "surface-container": "#1f1f25",
+                "tertiary-container": "#2fa096",
+                "outline-variant": "#5b403f",
+                "on-secondary-fixed": "#221b00",
+                "surface-container-lowest": "#0e0e13",
+                "secondary-container": "#fad100",
+                "surface": "#131318",
+                "on-secondary-container": "#6d5a00",
+                "error-container": "#93000a",
+                "surface-variant": "#35343a",
+                "background": "#131318",
+                "primary-fixed-dim": "#ffb3b1",
+                "on-secondary-fixed-variant": "#554600",
+                "outline": "#ab8987"
+              },
+              fontFamily: {
+                "headline": ["Epilogue"],
+                "body": ["Be Vietnam Pro"],
+                "label": ["Be Vietnam Pro"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-nav {
+            background: rgba(19, 19, 24, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        .collector-gradient {
+            background: linear-gradient(135deg, #ffb3b1 0%, #ff535b 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation (Shared Component) -->
+<nav class="sticky top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl shadow-2xl shadow-red-950/20 bg-gradient-to-b from-transparent to-slate-900/10">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-black tracking-tighter text-red-600 dark:text-red-500 font-headline uppercase">
+                THE CINEMATIC COLLECTOR
+            </div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-slate-300 hover:text-white transition-colors font-['Epilogue'] tracking-tight uppercase font-bold" href="#">Thể Loại</a>
+<a class="text-slate-300 hover:text-white transition-colors font-['Epilogue'] tracking-tight uppercase font-bold" href="#">Mới Nhất</a>
+<a class="text-slate-300 hover:text-white transition-colors font-['Epilogue'] tracking-tight uppercase font-bold" href="#">Bán Chạy</a>
+<a class="text-slate-300 hover:text-white transition-colors font-['Epilogue'] tracking-tight uppercase font-bold" href="#">Về Chúng Tôi</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-red-500 hover:text-red-400 transition-all duration-300 scale-95 active:scale-90">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<button class="text-red-500 hover:text-red-400 transition-all duration-300 scale-95 active:scale-90">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="max-w-screen-2xl mx-auto px-8 py-12 min-h-screen">
+<!-- Header Section -->
+<header class="mb-12">
+<h1 class="text-5xl md:text-7xl font-black font-headline tracking-tighter uppercase mb-2">
+                GIỎ HÀNG <span class="text-primary">(3 món)</span>
+</h1>
+<div class="h-1 w-24 bg-primary-container"></div>
+</header>
+<div class="flex flex-col lg:flex-row gap-12">
+<!-- Left Section: Cart Items List (65%) -->
+<section class="lg:w-[65%] space-y-8">
+<!-- Item 1: Chainsaw Man -->
+<div class="group relative flex flex-col md:flex-row items-center gap-6 p-6 bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
+<div class="w-32 h-48 flex-shrink-0 overflow-hidden rounded-xl bg-surface-container-highest">
+<img alt="Manga Cover" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Close-up of a vibrant action-oriented manga volume cover featuring dramatic character poses in high-contrast red and black style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQkbwj1qjfactP1_bwVJBndMkjEXRx9KpBEZGXtIConPDZWB0ZwWHNL5BkEHn7LmXx8knS07txs8wDCh9MTwodgnDNbSQcG4n3Xm_gF5XPiLtes4FlIVgHONOeR6D2SO2pX-mS0IKt3_BZBnaT637DQTHB5j91VEF43APgiqpDyuuf0oexrC0c4REqTI0isw6P0bwSWQUOBvFvUzx3CFkeGeooFxQqUwyv8eflVq8tWgS_SdnBfjgbQpOLBxSaiR_wfi0NzYLafD3V"/>
+</div>
+<div class="flex-grow flex flex-col md:flex-row md:items-center justify-between gap-6 w-full">
+<div>
+<h3 class="text-xl font-bold font-headline mb-1 tracking-tight">CHAINSAW MAN - TẬP 12</h3>
+<p class="text-sm text-outline uppercase tracking-widest font-medium">Bản Giới Hạn</p>
+<div class="mt-4 text-primary font-bold text-lg">55.000đ</div>
+</div>
+<div class="flex items-center gap-12">
+<!-- Qty Selector -->
+<div class="flex items-center bg-surface-container-lowest p-1 rounded-lg">
+<button class="w-8 h-8 flex items-center justify-center hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="w-10 text-center font-bold">1</span>
+<button class="w-8 h-8 flex items-center justify-center hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="text-right min-w-[100px]">
+<div class="text-xs text-outline uppercase mb-1">Tổng cộng</div>
+<div class="font-black text-xl tracking-tighter">55.000đ</div>
+</div>
+<button class="text-outline hover:text-error transition-colors group/del">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2: Jujutsu Kaisen -->
+<div class="group relative flex flex-col md:flex-row items-center gap-6 p-6 bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
+<div class="w-32 h-48 flex-shrink-0 overflow-hidden rounded-xl bg-surface-container-highest">
+<img alt="Manga Cover" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Editorial manga book cover with dark moody atmosphere featuring stylized character art in neon purple and deep black accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGMwYaz5fUpLyG3UDRuR-FQeLpH430kSPSk4OenIWVMLjoXf0yUYm7Coq0bk10HcbYx8CCY6n2bqNnHitV1NG_LvpnsoPS13CJnOHvwYkGqhkZrZ2XNelujK0XHxL5FZ5uuK300w4VgWPdshhmG_8MbWHHFZuOkbRhkRq7x1Aq8oD4foDO_Pvkg84VLeK-GiCMIhV8KFa-iuV-1eYLnoItBfNxTUKnpz5e9_UJl5ZmQEPMBAKT4GFt5ZtlzCLxs_t7GsHwyPAKJnms"/>
+</div>
+<div class="flex-grow flex flex-col md:flex-row md:items-center justify-between gap-6 w-full">
+<div>
+<h3 class="text-xl font-bold font-headline mb-1 tracking-tight">JUJUTSU KAISEN - TẬP 0</h3>
+<p class="text-sm text-outline uppercase tracking-widest font-medium">Bản Đặc Biệt</p>
+<div class="mt-4 text-primary font-bold text-lg">120.000đ</div>
+</div>
+<div class="flex items-center gap-12">
+<div class="flex items-center bg-surface-container-lowest p-1 rounded-lg">
+<button class="w-8 h-8 flex items-center justify-center hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="w-10 text-center font-bold">2</span>
+<button class="w-8 h-8 flex items-center justify-center hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="text-right min-w-[100px]">
+<div class="text-xs text-outline uppercase mb-1">Tổng cộng</div>
+<div class="font-black text-xl tracking-tighter">240.000đ</div>
+</div>
+<button class="text-outline hover:text-error transition-colors group/del">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Empty State (Hidden by default, shown when items are 0) -->
+<div class="hidden flex-col items-center justify-center py-24 text-center">
+<div class="relative w-48 h-48 mb-8 opacity-50">
+<img alt="Empty Cart" class="w-full h-full object-contain grayscale" data-alt="A minimalist black and white manga illustration of a lonely character looking into an empty wooden box, dramatic shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0I2bVKlF1DKfUilmp9_VtMHXFCTKEXUzc-5CHiw6PArJvtWfQIEiOR7q1L4qYMlwIRQP-ty89xSCXWhYUUFuvw4rc-ZeQkP5WSAT-2xRtLlRybt-pzQjvgAy13zlyYcNSZ_yQeBxMSOoPs6Yisu90eS-DZHVu_yU3D8a2aPZf0Rj_FKIxOXbJL04svJExBX7que0jl6CSuhHWH-KOc8NoNJqo6G7ODNDMDrgXfIW9nyFtbIqDfLKmBPItA1ok1abpbzIZgilQcPyd"/>
+</div>
+<h2 class="text-3xl font-black font-headline mb-4">GIỎ HÀNG TRỐNG</h2>
+<p class="text-outline mb-8 max-w-xs">Kho tàng tri thức đang chờ đón bạn. Hãy lấp đầy giỏ hàng bằng những tác phẩm kinh điển!</p>
+<button class="collector-gradient text-on-primary-container px-10 py-4 font-bold uppercase tracking-widest text-sm hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-primary/20">
+                        Tiếp Tục Mua Sắm
+                    </button>
+</div>
+</section>
+<!-- Right Section: Sticky Order Summary (35%) -->
+<aside class="lg:w-[35%]">
+<div class="sticky top-24 space-y-6">
+<!-- Progress Card -->
+<div class="bg-surface-container-high p-6 rounded-lg">
+<div class="flex justify-between text-sm font-bold uppercase mb-3">
+<span>Ưu đãi vận chuyển</span>
+<span class="text-primary">Thiếu 50.000đ</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-2 rounded-full overflow-hidden">
+<div class="bg-gradient-to-r from-error to-primary-container h-full w-[80%] rounded-full transition-all duration-1000"></div>
+</div>
+<p class="mt-4 text-xs text-outline font-medium">Mua thêm 50k để nhận ngay <span class="text-secondary-fixed">MIỄN PHÍ VẬN CHUYỂN</span> toàn quốc.</p>
+</div>
+<!-- Summary Card -->
+<div class="bg-surface-container p-8 space-y-6">
+<h2 class="text-2xl font-black font-headline uppercase tracking-tight">Tóm tắt đơn hàng</h2>
+<div class="space-y-4">
+<div class="flex justify-between text-on-surface-variant">
+<span>Tạm tính (3 món)</span>
+<span class="font-bold text-on-surface">295.000đ</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Phí vận chuyển</span>
+<span class="font-bold text-on-surface">30.000đ</span>
+</div>
+<div class="pt-4 border-t border-outline-variant flex justify-between items-end">
+<span class="font-headline font-bold text-lg uppercase">Tổng cộng</span>
+<div class="text-right">
+<div class="text-3xl font-black tracking-tighter text-primary">325.000đ</div>
+<div class="text-[10px] text-outline uppercase mt-1">Đã bao gồm thuế VAT</div>
+</div>
+</div>
+</div>
+<!-- Promo Code -->
+<div class="space-y-2">
+<label class="text-[10px] uppercase font-black text-outline tracking-widest">Mã Giảm Giá</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none border-b border-outline-variant focus:border-primary focus:ring-0 text-sm font-bold uppercase tracking-widest py-3 px-4 transition-all placeholder:text-outline/30" placeholder="NHAP_MA_TAI_DAY" type="text"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-primary font-bold text-xs hover:text-white transition-colors">ÁP DỤNG</button>
+</div>
+</div>
+<!-- Checkout Button -->
+<button class="w-full collector-gradient text-on-primary-container py-5 font-black uppercase tracking-widest text-lg hover:shadow-[0_0_30px_rgba(255,83,91,0.4)] active:scale-95 transition-all relative overflow-hidden group">
+<span class="relative z-10">THANH TOÁN NGAY</span>
+</button>
+<div class="flex items-center justify-center gap-4 pt-4 grayscale opacity-40">
+<img class="h-6" data-alt="visa card logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBI8f-HJZQmEjge8f8-EJLLAU9KT8MZ8IqsNXemn1H10pYzh4r2sH7OQsjTQUhf0N_V7QMvLhQISn3zTnI4n2gsMfTYMNkPt85FoQz3ceUcU3gIBTtae-jMW-BiM_5lANUkJUaBsg9SX1aRc9GqbNriUMK-KtaLpERgVJHAQqwKOEPZBAWqXf8Mhme62CV6G-rhwZ2I9jciz3cM8XBn5HBkdUtjzvSrYKdsczP-_uvLEMELFPKmRIW0FNJYdZvm8hM3tZWYi10l82u"/>
+<img class="h-6" data-alt="mastercard logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWJXoEE61UZsw2pHDjyvEoBP-kLLde-26gp6KA8Uyic74A6ZvdVUl2NZn9IRZh2mi5zdHEHpZXkDWpKfwEplc0OqsfS7Zr7QIeJLMJGh-r63Ir-Ozvr_x1mCKeQE6T9y65zqiZyBcGKzDuYzrWjo6zWNhghhMBVMNjc07uy9_pPsSBU_baP1KXlnkfrtyAseQH2C6nS-cRJbmsSTgK_rXS6dC4qeJ8TGpflwpYkbEEFLw5aQuCx2rx9RHQM966LQcN8X3fSTemYH0M"/>
+<img class="h-6" data-alt="electronic payment method icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyA26icKiQAA_SVekj_em23WZrPMsNsB_mqqKqi-5RRN1Tq_T3C2LgBpsXr0FMg2nhVK0N6bnxiLSN4m6hCabHBKl0W26evzDLX_cZej-dwS5ltxcvi9c9hP8XEiq3snIxSDi2QSNyaMKYgF-Jl8mAjaJm7Q1oldgLWq2I_HSPWeZtXD60WG6YHDHSKk6yp5e6NK8O3rO9zcnjQlnmCXc_sYquPufDNQqQ8QufwA9rurJWK8WNrvN2ISyc15t5wJ6hUuqINpui5fDy"/>
+</div>
+</div>
+<!-- Additional Help -->
+<div class="text-center">
+<a class="text-xs font-bold text-outline hover:text-primary transition-colors underline underline-offset-4 uppercase tracking-widest" href="#">Tiếp tục chọn thêm Manga</a>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full pt-20 pb-10 px-8 bg-slate-950 border-t border-slate-900">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-screen-2xl mx-auto">
+<div class="space-y-6">
+<div class="text-xl font-black text-red-600 font-headline uppercase">THE CINEMATIC COLLECTOR</div>
+<p class="text-slate-500 font-['Be_Vietnam_Pro'] text-sm tracking-wide leading-relaxed">
+                    Nơi lưu giữ những khoảnh khắc điện ảnh qua từng trang giấy. Chúng tôi cung cấp những ấn bản Manga sưu tầm cao cấp nhất cho độc giả Việt Nam.
+                </p>
+</div>
+<div class="space-y-4">
+<h4 class="text-white font-bold uppercase text-sm tracking-widest">Thông tin</h4>
+<ul class="space-y-2">
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8 text-sm font-['Be_Vietnam_Pro']" href="#">Điều Khoản</a></li>
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8 text-sm font-['Be_Vietnam_Pro']" href="#">Bảo Mật</a></li>
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8 text-sm font-['Be_Vietnam_Pro']" href="#">Vận Chuyển</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="text-white font-bold uppercase text-sm tracking-widest">Hỗ trợ</h4>
+<ul class="space-y-2">
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8 text-sm font-['Be_Vietnam_Pro']" href="#">Liên Hệ</a></li>
+<li><a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8 text-sm font-['Be_Vietnam_Pro']" href="#">Câu hỏi thường gặp</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="text-white font-bold uppercase text-sm tracking-widest">Mạng xã hội</h4>
+<div class="flex gap-4">
+<a class="text-slate-500 hover:text-red-500 transition-colors font-['Be_Vietnam_Pro'] text-sm" href="#">Facebook</a>
+<a class="text-slate-500 hover:text-red-500 transition-colors font-['Be_Vietnam_Pro'] text-sm" href="#">Instagram</a>
+</div>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto mt-20 pt-8 border-t border-slate-900 text-center text-slate-500 text-xs font-['Be_Vietnam_Pro'] tracking-widest">
+            © 2024 THE CINEMATIC COLLECTOR. ALL RIGHTS RESERVED.
+        </div>
+</footer>
+</body></html>
+/////////
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thanh Toán - THE CINEMATIC COLLECTOR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#ff535b",
+              "secondary-fixed": "#ffe171",
+              "error": "#ffb4ab",
+              "surface-bright": "#39383e",
+              "on-error": "#690005",
+              "on-tertiary-fixed-variant": "#00504a",
+              "on-primary-container": "#5b000e",
+              "on-primary": "#680011",
+              "on-surface": "#e4e1e9",
+              "on-primary-fixed-variant": "#92001c",
+              "on-tertiary-fixed": "#00201d",
+              "tertiary-fixed": "#8cf4e8",
+              "surface-tint": "#ffb3b1",
+              "inverse-primary": "#bb152c",
+              "primary": "#ffb3b1",
+              "on-tertiary-container": "#00302c",
+              "on-surface-variant": "#e4bebc",
+              "secondary-fixed-dim": "#e9c400",
+              "tertiary": "#6fd8cc",
+              "on-primary-fixed": "#410007",
+              "inverse-on-surface": "#303036",
+              "on-secondary": "#3b2f00",
+              "on-tertiary": "#003733",
+              "on-error-container": "#ffdad6",
+              "surface-dim": "#131318",
+              "tertiary-fixed-dim": "#6fd8cc",
+              "primary-fixed": "#ffdad8",
+              "surface-container-low": "#1b1b20",
+              "on-background": "#e4e1e9",
+              "surface-container-highest": "#35343a",
+              "surface-container-high": "#2a292f",
+              "inverse-surface": "#e4e1e9",
+              "secondary": "#fff0c4",
+              "surface-container": "#1f1f25",
+              "tertiary-container": "#2fa096",
+              "outline-variant": "#5b403f",
+              "on-secondary-fixed": "#221b00",
+              "surface-container-lowest": "#0e0e13",
+              "secondary-container": "#fad100",
+              "surface": "#131318",
+              "on-secondary-container": "#6d5a00",
+              "error-container": "#93000a",
+              "surface-variant": "#35343a",
+              "background": "#131318",
+              "primary-fixed-dim": "#ffb3b1",
+              "on-secondary-fixed-variant": "#554600",
+              "outline": "#ab8987"
+            },
+            fontFamily: {
+              "headline": ["Epilogue"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #131318; color: #e4e1e9; }
+        h1, h2, h3, .font-headline { font-family: 'Epilogue', sans-serif; }
+        
+        /* Custom UI Transitions */
+        .step-active { color: #ff535b; }
+        .step-done { color: #fad100; }
+        
+        .floating-label-group:focus-within label,
+        .floating-label-group input:not(:placeholder-shown) + label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #ffb3b1;
+        }
+
+        .payment-card:hover {
+            box-shadow: 0 0 15px rgba(255, 83, 91, 0.3);
+            border-color: #ff535b;
+            transform: scale(1.02);
+        }
+
+        .payment-card-selected {
+            border-color: #ff535b;
+            box-shadow: 0 0 20px rgba(255, 83, 91, 0.4);
+            transform: scale(1.02);
+            background: #1f1f25;
+        }
+
+        .glass-header {
+            background: rgba(14, 14, 19, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface overflow-x-hidden">
+<!-- TopNavBar (Shared Component) -->
+<header class="sticky top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl shadow-2xl shadow-red-950/20 bg-gradient-to-b from-transparent to-slate-900/10">
+<nav class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-black tracking-tighter text-red-600 dark:text-red-500 font-['Epilogue'] tracking-tight uppercase">
+                THE CINEMATIC COLLECTOR
+            </div>
+<div class="hidden md:flex items-center gap-8 font-['Epilogue'] tracking-tight uppercase font-bold">
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Thể Loại</a>
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Mới Nhất</a>
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Bán Chạy</a>
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Về Chúng Tôi</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-slate-300 hover:text-red-400 transition-all duration-300 cursor-pointer" data-icon="shopping_cart">shopping_cart</span>
+</div>
+<div class="scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-slate-300 hover:text-red-400 transition-all duration-300 cursor-pointer" data-icon="person">person</span>
+</div>
+</div>
+</nav>
+</header>
+<main class="max-w-screen-2xl mx-auto px-8 pt-12 pb-24">
+<!-- Step Indicator -->
+<div class="flex justify-between items-center mb-16 max-w-3xl mx-auto relative">
+<div class="absolute top-1/2 left-0 w-full h-[2px] bg-surface-container-high -translate-y-1/2 z-0"></div>
+<!-- Step 1: Done -->
+<div class="relative z-10 flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center border-4 border-surface shadow-xl">
+<span class="material-symbols-outlined text-lg" data-icon="check" data-weight="fill">check</span>
+</div>
+<span class="text-xs font-bold uppercase tracking-widest text-secondary-container font-headline">Thông tin</span>
+</div>
+<!-- Step 2: Done -->
+<div class="relative z-10 flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center border-4 border-surface shadow-xl">
+<span class="material-symbols-outlined text-lg" data-icon="check" data-weight="fill">check</span>
+</div>
+<span class="text-xs font-bold uppercase tracking-widest text-secondary-container font-headline">Vận chuyển</span>
+</div>
+<!-- Step 3: Active -->
+<div class="relative z-10 flex flex-col items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center border-4 border-surface shadow-[0_0_20px_rgba(255,83,91,0.5)]">
+<span class="text-lg font-black font-headline">3</span>
+</div>
+<span class="text-xs font-bold uppercase tracking-widest text-primary font-headline">Thanh toán</span>
+</div>
+<!-- Step 4: Pending -->
+<div class="relative z-10 flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center border-4 border-surface">
+<span class="text-sm font-bold font-headline">4</span>
+</div>
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant font-headline opacity-50">Xác nhận</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<!-- Left: Checkout Form -->
+<div class="lg:col-span-7 space-y-12">
+<!-- Personal Info Section -->
+<section class="space-y-8">
+<h2 class="text-3xl font-black font-headline tracking-tight uppercase flex items-center gap-4">
+<span class="w-8 h-[2px] bg-primary"></span>
+                        Thông tin giao hàng
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="relative floating-label-group">
+<input class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant focus:border-primary focus:ring-0 transition-all pt-6 pb-2 text-on-surface font-medium" id="name" placeholder=" " type="text"/>
+<label class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-xs tracking-widest font-bold" for="name">Họ và tên</label>
+</div>
+<div class="relative floating-label-group">
+<input class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant focus:border-primary focus:ring-0 transition-all pt-6 pb-2 text-on-surface font-medium" id="phone" placeholder=" " type="tel"/>
+<label class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-xs tracking-widest font-bold" for="phone">Số điện thoại</label>
+</div>
+<div class="md:col-span-2 relative floating-label-group">
+<input class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant focus:border-primary focus:ring-0 transition-all pt-6 pb-2 text-on-surface font-medium" id="address" placeholder=" " type="text"/>
+<label class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-xs tracking-widest font-bold" for="address">Địa chỉ nhận hàng</label>
+</div>
+</div>
+</section>
+<!-- Shipping Methods -->
+<section class="space-y-8">
+<h2 class="text-3xl font-black font-headline tracking-tight uppercase flex items-center gap-4">
+<span class="w-8 h-[2px] bg-primary"></span>
+                        Phương thức vận chuyển
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Standard -->
+<div class="payment-card cursor-pointer p-6 bg-surface-container-low border border-transparent transition-all flex justify-between items-start group">
+<div class="space-y-1">
+<h3 class="font-headline font-bold text-lg text-on-surface group-hover:text-primary transition-colors">Giao hàng nhanh</h3>
+<p class="text-sm text-on-surface-variant">Dự kiến nhận: 2-3 ngày</p>
+</div>
+<span class="font-headline font-black text-secondary-container">35.000đ</span>
+</div>
+<!-- Express -->
+<div class="payment-card payment-card-selected cursor-pointer p-6 border border-primary transition-all flex justify-between items-start group">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<h3 class="font-headline font-bold text-lg text-primary">Hỏa tốc (Akihabara Express)</h3>
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="bolt" data-weight="fill">bolt</span>
+</div>
+<p class="text-sm text-on-surface-variant">Nhận ngay trong ngày</p>
+</div>
+<span class="font-headline font-black text-secondary-container">65.000đ</span>
+</div>
+</div>
+</section>
+<!-- Payment Methods -->
+<section class="space-y-8">
+<h2 class="text-3xl font-black font-headline tracking-tight uppercase flex items-center gap-4">
+<span class="w-8 h-[2px] bg-primary"></span>
+                        Thanh toán
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Momo -->
+<div class="payment-card cursor-pointer p-6 bg-surface-container-low border border-transparent transition-all flex flex-col items-center gap-4 text-center">
+<div class="w-12 h-12 bg-[#A50064] rounded-xl flex items-center justify-center">
+<span class="font-black text-white text-xs">Momo</span>
+</div>
+<span class="font-bold text-sm tracking-widest uppercase font-headline">Ví Momo</span>
+</div>
+<!-- Bank -->
+<div class="payment-card cursor-pointer p-6 bg-surface-container-low border border-transparent transition-all flex flex-col items-center gap-4 text-center">
+<div class="w-12 h-12 bg-surface-container-high rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="credit_card">credit_card</span>
+</div>
+<span class="font-bold text-sm tracking-widest uppercase font-headline">Ngân hàng</span>
+</div>
+<!-- COD -->
+<div class="payment-card payment-card-selected cursor-pointer p-6 border border-primary transition-all flex flex-col items-center gap-4 text-center">
+<div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+</div>
+<span class="font-bold text-sm tracking-widest uppercase font-headline text-primary">Tiền mặt (COD)</span>
+</div>
+</div>
+</section>
+<!-- Submit Action -->
+<div class="pt-8">
+<button class="w-full py-6 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-headline font-black text-xl uppercase tracking-tighter shadow-[0_10px_40px_rgba(255,83,91,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all">
+                        Hoàn tất đặt hàng — 1.845.000đ
+                    </button>
+<p class="text-center text-on-surface-variant text-xs mt-6 uppercase tracking-widest opacity-60">Bằng việc nhấn đặt hàng, bạn đồng ý với các điều khoản của chúng tôi.</p>
+</div>
+</div>
+<!-- Right: Order Review -->
+<div class="lg:col-span-5">
+<div class="sticky top-28 space-y-8">
+<div class="bg-surface-container p-8 rounded-none border-l-4 border-secondary-container">
+<h3 class="text-2xl font-black font-headline tracking-tight uppercase mb-8">Chi tiết đơn hàng</h3>
+<div class="space-y-6 max-h-[400px] overflow-y-auto pr-4">
+<!-- Item 1 -->
+<div class="flex gap-6 group">
+<div class="w-20 h-28 bg-surface-container-low overflow-hidden flex-shrink-0">
+<img alt="Manga Cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Close-up of a high-quality manga cover with dramatic red and black ink illustration on textured paper" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_UEfxghcJ3-oynZqlPw-YmCxHY59FkqmjCZo4sZdKPwpif42nYaH7x1hWtpGc1tPHvEQWA-0n5z9ThFZUU6BeAl3FBUidvXOxjOtSP16TfQ2Jf5p09EhLgAZqLfOSNwGSoCHK8s_vxbCQaFBN2ri-ljfzVGPTM5xEZ-ESywWo-n0V-6Rw1eBlvO4B4KTsT0xOjGJ_-ZZfyrd5wX60MO5y-M6gCzd4GEa1pGnMKhgN_otqpNfVcdvj-mT8Ybq--8uH9UaGdiGPRDle"/>
+</div>
+<div class="flex-grow flex flex-col justify-between py-1">
+<div>
+<h4 class="font-headline font-bold text-on-surface leading-tight">Berserk Deluxe Edition Vol. 1</h4>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1">Sưu tầm • Bìa cứng</p>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-xs font-bold text-on-surface-variant">x1</span>
+<span class="font-headline font-black text-primary">1.250.000đ</span>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-6 group">
+<div class="w-20 h-28 bg-surface-container-low overflow-hidden flex-shrink-0">
+<img alt="Manga Cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Vertical Japanese poster style manga art featuring a samurai silhouette against a crimson sun" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDINXvpGslM3_6fw2M9Fvi0J8gRd9mRGPS0AIzGRT2JamFyhMdlW2OiczrvfZ3MeqqewdfBUJhZqTQJhb9dDjc4H9EKkfWSPcNqYVK_l64TLjsFprndXVZeaPQfblwnwtyMZ1IwYJewq8gx03R4GsDmBrVxl4ox4ekOOfTBIHyXqJe5p3VApAlvdvOMCGk7oAVtTZQIJ_eTkAba4uBnFPHGZuqdPLvirKvcHoRWIgG1I_OotXf6RhnoGHTsCsxbXw0UQJc7mI1FB6QB"/>
+</div>
+<div class="flex-grow flex flex-col justify-between py-1">
+<div>
+<h4 class="font-headline font-bold text-on-surface leading-tight">Vagabond VizBig Vol. 1</h4>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1">Kinh điển • 3-in-1</p>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-xs font-bold text-on-surface-variant">x1</span>
+<span class="font-headline font-black text-primary">530.000đ</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Price Tally -->
+<div class="mt-8 pt-8 border-t border-outline-variant space-y-4">
+<div class="flex justify-between text-sm uppercase tracking-widest font-bold">
+<span class="text-on-surface-variant">Tạm tính</span>
+<span class="text-on-surface">1.780.000đ</span>
+</div>
+<div class="flex justify-between text-sm uppercase tracking-widest font-bold">
+<span class="text-on-surface-variant">Vận chuyển</span>
+<span class="text-secondary-container">65.000đ</span>
+</div>
+<div class="flex justify-between items-end pt-4">
+<span class="font-headline font-black text-xl uppercase tracking-tighter">Tổng cộng</span>
+<div class="text-right">
+<p class="text-3xl font-headline font-black text-secondary-container">1.845.000đ</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Đã bao gồm VAT</p>
+</div>
+</div>
+</div>
+<!-- Coupon Input -->
+<div class="mt-8 relative">
+<input class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant focus:border-secondary focus:ring-0 transition-all py-3 text-xs tracking-widest font-black uppercase" placeholder="MÃ GIẢM GIÁ" type="text"/>
+<button class="absolute right-0 top-1/2 -translate-y-1/2 text-secondary font-headline font-black text-xs uppercase tracking-widest px-4">Áp dụng</button>
+</div>
+</div>
+<!-- Trust Badges -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-surface-container-low flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="verified">verified</span>
+<span class="text-[10px] font-bold uppercase tracking-widest leading-tight text-on-surface-variant">Sản phẩm chính hãng</span>
+</div>
+<div class="p-4 bg-surface-container-low flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="lock">lock</span>
+<span class="text-[10px] font-bold uppercase tracking-widest leading-tight text-on-surface-variant">Thanh toán bảo mật</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-slate-950 w-full pt-20 pb-10 px-8 border-t border-slate-900">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-screen-2xl mx-auto font-['Be_Vietnam_Pro'] text-sm tracking-wide">
+<div class="space-y-6">
+<div class="text-xl font-black text-red-600 font-['Epilogue'] uppercase tracking-tight">THE CINEMATIC COLLECTOR</div>
+<p class="text-slate-500 leading-relaxed">Nâng tầm trải nghiệm sưu tầm manga của bạn với những ấn bản giới hạn và nghệ thuật tinh tế nhất.</p>
+</div>
+<div class="space-y-6">
+<h4 class="text-red-500 font-bold uppercase tracking-widest">Hỗ Trợ</h4>
+<div class="flex flex-col gap-4">
+<a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8" href="#">Vận Chuyển</a>
+<a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8" href="#">Bảo Mật</a>
+<a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8" href="#">Điều Khoản</a>
+</div>
+</div>
+<div class="space-y-6">
+<h4 class="text-red-500 font-bold uppercase tracking-widest">Kết Nối</h4>
+<div class="flex flex-col gap-4">
+<a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8" href="#">Facebook</a>
+<a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8" href="#">Instagram</a>
+<a class="text-slate-500 hover:text-red-500 transition-colors underline underline-offset-8" href="#">Liên Hệ</a>
+</div>
+</div>
+<div class="space-y-6">
+<h4 class="text-red-500 font-bold uppercase tracking-widest">Newsletter</h4>
+<p class="text-slate-500">Đăng ký để nhận thông báo về các đợt phát hành giới hạn.</p>
+<div class="flex gap-2">
+<input class="bg-slate-900 border-0 focus:ring-1 focus:ring-red-500 text-xs w-full p-3 uppercase tracking-widest" placeholder="EMAIL CỦA BẠN" type="email"/>
+<button class="bg-red-600 px-4 py-2 hover:bg-red-700 transition-colors">
+<span class="material-symbols-outlined text-white" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto mt-20 pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-slate-500 text-xs tracking-widest">© 2024 THE CINEMATIC COLLECTOR. ALL RIGHTS RESERVED.</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-slate-800" data-icon="payments">payments</span>
+<span class="material-symbols-outlined text-slate-800" data-icon="credit_card">credit_card</span>
+</div>
+</div>
+</footer>
+<!-- Success State Overlay (Hidden by default, used for demonstration of instructions) -->
+<!-- Add 'hidden' class to hide, currently showing for visual reference per task -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-6 hidden">
+<div class="absolute inset-0 bg-surface-container-lowest/95 backdrop-blur-2xl"></div>
+<div class="relative max-w-lg w-full bg-surface-container-high p-12 text-center space-y-8 border-t-8 border-primary shadow-[0_0_100px_rgba(255,83,91,0.2)]">
+<div class="w-24 h-24 bg-primary rounded-full mx-auto flex items-center justify-center shadow-[0_0_40px_rgba(255,83,91,0.5)]">
+<span class="material-symbols-outlined text-5xl text-on-primary" data-icon="check_circle">check_circle</span>
+</div>
+<div class="space-y-4">
+<h2 class="text-4xl font-black font-headline tracking-tighter uppercase text-on-surface">ĐẶT HÀNG THÀNH CÔNG!</h2>
+<p class="text-secondary-container font-headline font-bold text-lg">Mã đơn hàng: #CINEMA-8829-X</p>
+<p class="text-on-surface-variant text-sm max-w-xs mx-auto">Cảm ơn bạn đã lựa chọn bộ sưu tập của chúng tôi. Một email xác nhận đã được gửi đi.</p>
+</div>
+<div class="pt-8 space-y-4">
+<button class="w-full py-4 bg-primary text-on-primary font-headline font-black uppercase tracking-widest hover:brightness-110 transition-all">Theo dõi đơn hàng</button>
+<button class="w-full py-4 bg-transparent border border-outline-variant text-on-surface-variant font-headline font-bold uppercase tracking-widest hover:text-on-surface transition-all">Quay lại trang chủ</button>
+</div>
+<!-- Confetti Burst Decoration (CSS Only) -->
+<div class="absolute -top-10 -left-10 w-20 h-20 bg-primary/20 blur-3xl rounded-full"></div>
+<div class="absolute -bottom-10 -right-10 w-20 h-20 bg-secondary/10 blur-3xl rounded-full"></div>
+</div>
+</div>
+</body></html>
+
+//////////
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>THE NOIR CURATOR | Collector Access</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;700;900&amp;family=Be+Vietnam+Pro:wght@300;400;500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#ff535b",
+              "on-secondary-container": "#6d5a00",
+              "surface-dim": "#131318",
+              "on-tertiary-fixed": "#00201d",
+              "error-container": "#93000a",
+              "secondary": "#fff0c4",
+              "primary-fixed": "#ffdad8",
+              "on-primary-fixed-variant": "#92001c",
+              "surface-container-low": "#1b1b20",
+              "on-secondary-fixed": "#221b00",
+              "error": "#ffb4ab",
+              "outline": "#ab8987",
+              "tertiary-fixed": "#8cf4e8",
+              "tertiary-fixed-dim": "#6fd8cc",
+              "surface-tint": "#ffb3b1",
+              "on-background": "#e4e1e9",
+              "surface": "#131318",
+              "tertiary": "#6fd8cc",
+              "primary-fixed-dim": "#ffb3b1",
+              "on-surface": "#e4e1e9",
+              "on-primary-container": "#5b000e",
+              "inverse-surface": "#e4e1e9",
+              "on-primary-fixed": "#410007",
+              "surface-container-lowest": "#0e0e13",
+              "primary": "#ffb3b1",
+              "on-surface-variant": "#e4bebc",
+              "surface-container": "#1f1f25",
+              "secondary-container": "#fad100",
+              "inverse-on-surface": "#303036",
+              "on-tertiary-fixed-variant": "#00504a",
+              "on-tertiary": "#003733",
+              "on-error": "#690005",
+              "on-secondary": "#3b2f00",
+              "background": "#131318",
+              "on-tertiary-container": "#00302c",
+              "outline-variant": "#5b403f",
+              "on-primary": "#680011",
+              "secondary-fixed": "#ffe171",
+              "on-error-container": "#ffdad6",
+              "surface-bright": "#39383e",
+              "inverse-primary": "#bb152c",
+              "on-secondary-fixed-variant": "#554600",
+              "surface-container-highest": "#35343a",
+              "secondary-fixed-dim": "#e9c400",
+              "tertiary-container": "#2fa096",
+              "surface-container-high": "#2a292f",
+              "surface-variant": "#35343a"
+            },
+            fontFamily: {
+              "headline": ["Epilogue"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes drift {
+            0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+        .sakura {
+            position: absolute;
+            background: #ffb3b1;
+            border-radius: 100% 0 100% 0;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .speed-line {
+            background: linear-gradient(to right, transparent, rgba(255, 83, 91, 0.05), transparent);
+        }
+        .grid-pan {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(255, 83, 91, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest font-body text-on-surface overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Elements -->
+<div class="fixed inset-0 z-0 overflow-hidden">
+<!-- Manga Speed Lines -->
+<div class="absolute inset-0 opacity-20">
+<div class="speed-line absolute w-full h-[1px] top-1/4 -rotate-12 scale-150"></div>
+<div class="speed-line absolute w-full h-[1px] top-1/2 rotate-6 scale-150"></div>
+<div class="speed-line absolute w-full h-[1px] top-3/4 -rotate-3 scale-150"></div>
+</div>
+<!-- Sakura Petals (Simulated) -->
+<div class="sakura w-4 h-2 top-[10%] left-[20%]" style="animation: drift 12s linear infinite;"></div>
+<div class="sakura w-3 h-1 top-[5%] left-[50%]" style="animation: drift 15s linear infinite 2s;"></div>
+<div class="sakura w-5 h-3 top-[15%] left-[80%]" style="animation: drift 10s linear infinite 5s;"></div>
+<div class="sakura w-2 h-1 top-[20%] left-[40%]" style="animation: drift 18s linear infinite 1s;"></div>
+<!-- Grid Pattern Overlay -->
+<div class="grid-pan absolute inset-0 opacity-40"></div>
+<!-- Ambient Red Neon Glow -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-container/10 blur-[120px] rounded-full animate-pulse"></div>
+</div>
+<!-- Navigation (Shell Suppression Rule Applied: Minimalist Anchor) -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-6 backdrop-blur-md bg-transparent">
+<div class="text-2xl font-black tracking-tighter text-primary-container italic font-headline uppercase">
+            THE NOIR CURATOR
+        </div>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-primary text-2xl cursor-pointer hover:text-primary-container transition-colors">shopping_bag</span>
+<span class="material-symbols-outlined text-on-surface text-2xl cursor-pointer hover:text-primary transition-colors">menu</span>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="relative z-10 min-h-screen flex items-center justify-center px-4">
+<!-- Login/Register Container -->
+<div class="w-full max-w-md transition-all duration-700 ease-out translate-y-0 opacity-100">
+<!-- Glassmorphism Card -->
+<div class="backdrop-blur-xl bg-surface-container-lowest/40 border border-outline-variant/30 rounded-lg p-8 shadow-2xl shadow-primary-container/5">
+<!-- Brand Header -->
+<div class="text-center mb-10">
+<h1 class="font-headline font-black text-4xl tracking-tightest text-primary-container uppercase text-glow italic mb-2">
+                        MangaShop
+                    </h1>
+<p class="text-on-surface-variant text-sm tracking-widest uppercase opacity-70">Authentic Collector Registry</p>
+</div>
+<!-- Tab Switcher -->
+<div class="flex border-b border-outline-variant/20 mb-8 relative">
+<button class="flex-1 py-4 text-sm font-bold tracking-widest uppercase text-primary border-b-2 border-primary-container transition-all">
+                        Đăng nhập
+                    </button>
+<button class="flex-1 py-4 text-sm font-bold tracking-widest uppercase text-on-surface-variant hover:text-on-surface transition-all">
+                        Đăng ký
+                    </button>
+<!-- Underline Indicator is handled by active state above -->
+</div>
+<!-- Form Section -->
+<form class="space-y-6">
+<!-- Identity Input -->
+<div class="space-y-2">
+<label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80 ml-1">Collector Identity</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-xl group-focus-within:text-primary-container transition-colors">person</span>
+<input class="w-full bg-surface-container-low/60 border-none border-b border-outline-variant/30 py-4 pl-12 pr-4 text-on-surface placeholder:text-outline/50 focus:ring-1 focus:ring-primary-container/50 focus:bg-surface-container-high/80 transition-all outline-none rounded-sm" placeholder="Email hoặc Tên đăng nhập" type="text"/>
+</div>
+</div>
+<!-- Secure Input -->
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80">Access Cipher</label>
+<a class="text-[10px] font-bold uppercase tracking-wider text-error hover:text-primary-container transition-colors" href="#">Quên mật khẩu?</a>
+</div>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-xl group-focus-within:text-primary-container transition-colors">lock_open</span>
+<input class="w-full bg-surface-container-low/60 border-none border-b border-outline-variant/30 py-4 pl-12 pr-4 text-on-surface placeholder:text-outline/50 focus:ring-1 focus:ring-primary-container/50 focus:bg-surface-container-high/80 transition-all outline-none rounded-sm" placeholder="Mật khẩu bảo mật" type="password"/>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-4">
+<button class="group relative w-full overflow-hidden bg-gradient-to-br from-primary-container to-on-primary-fixed-variant py-4 font-headline font-bold text-sm tracking-widest uppercase text-on-primary shadow-[0_0_20px_rgba(255,83,91,0.3)] hover:shadow-[0_0_35px_rgba(255,83,91,0.5)] active:scale-[0.98] transition-all duration-300" type="submit">
+<span class="relative z-10 flex items-center justify-center gap-2">
+                                Khởi chạy hệ thống
+                                <span class="material-symbols-outlined text-sm">bolt</span>
+</span>
+<div class="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></div>
+</button>
+</div>
+<!-- Social Entry (Editorial Style) -->
+<div class="relative py-4">
+<div class="absolute inset-0 flex items-center"><div class="w-full border-t border-outline-variant/20"></div></div>
+<div class="relative flex justify-center text-[10px] font-black uppercase tracking-[0.3em]"><span class="bg-surface-container-lowest px-4 text-outline">Hoặc kết nối qua</span></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 py-3 border border-outline-variant/30 rounded-sm hover:bg-white/5 transition-all group" type="button">
+<img class="w-4 h-4 grayscale group-hover:grayscale-0 transition-all" data-alt="Google brand identity icon for authentication" src=""/>
+<span class="text-[10px] font-bold uppercase tracking-widest">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 py-3 border border-outline-variant/30 rounded-sm hover:bg-white/5 transition-all group" type="button">
+<span class="material-symbols-outlined text-lg text-outline group-hover:text-primary transition-colors">terminal</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Discord</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Footer Note -->
+<div class="mt-8 text-center space-y-4">
+<p class="text-on-surface-variant/40 text-[10px] leading-relaxed max-w-xs mx-auto">
+                    Việc truy cập vào hệ thống đồng nghĩa với việc bạn chấp nhận các <span class="text-on-surface-variant/80 underline decoration-primary-container/30">Điều khoản Bảo mật</span> dành cho Nhà Sưu Tầm.
+                </p>
+<div class="flex justify-center gap-8 opacity-20 hover:opacity-100 transition-opacity duration-500">
+<span class="text-[8px] font-black uppercase tracking-[0.5em]">Tokyo</span>
+<span class="text-[8px] font-black uppercase tracking-[0.5em]">Paris</span>
+<span class="text-[8px] font-black uppercase tracking-[0.5em]">New York</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Side Decoration (Asymmetric Element) -->
+<div class="fixed bottom-[-5%] right-[-5%] w-[40%] h-[60%] pointer-events-none opacity-[0.03] rotate-[-15deg] z-0">
+<img class="w-full h-full object-cover" data-alt="Monochrome manga panel illustration with dramatic line work and shadows in noir style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV1ciLqdOgBS-wCFyZqwUp-xTnHmh-YrQgrdL5VMU3AD-vgRKWDmiTFv7RNFyL7ly1Ou9zCPLRBfOlFpxJXkKGviZAozuRzJBqbmpRCN9ktzqc5tmz-vmQUIqlQ_db7X8xcWV5r_zNoKRcKb9si8ock_DFXZ3us12L7u40_uGkcg83HYNwEdDqQiuXwTzwuLgo_vPdjZ1hqh1SO9x00-KgRHdS92XW-dAfhd6OkgnlErfSlAmnoYEIQha7XN54FxnT43W45huQ1rBi"/>
+</div>
+<!-- Interactive Elements (FAB Suppression) -->
+</body></html>

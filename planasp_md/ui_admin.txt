@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MangaShop Admin Dashboard | The Cinematic Collector</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #0e0e13;
+        }
+        h1, h2, h3, .font-headline {
+            font-family: 'Epilogue', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#6d5a00",
+                        "on-secondary": "#3b2f00",
+                        "on-primary-fixed-variant": "#92001c",
+                        "surface-bright": "#39383e",
+                        "outline": "#ab8987",
+                        "on-primary": "#680011",
+                        "surface-tint": "#ffb3b1",
+                        "surface-container-lowest": "#0e0e13",
+                        "error-container": "#93000a",
+                        "surface": "#131318",
+                        "on-surface": "#e4e1e9",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "surface-variant": "#35343a",
+                        "inverse-surface": "#e4e1e9",
+                        "secondary-fixed": "#ffe171",
+                        "on-tertiary-fixed-variant": "#00504a",
+                        "tertiary-container": "#2fa096",
+                        "on-background": "#e4e1e9",
+                        "on-surface-variant": "#e4bebc",
+                        "surface-container-highest": "#35343a",
+                        "on-error": "#690005",
+                        "primary-container": "#ff535b",
+                        "on-tertiary": "#003733",
+                        "surface-container-high": "#2a292f",
+                        "secondary-fixed-dim": "#e9c400",
+                        "inverse-primary": "#bb152c",
+                        "on-primary-container": "#5b000e",
+                        "on-secondary-fixed": "#221b00",
+                        "on-tertiary-fixed": "#00201d",
+                        "secondary": "#fff0c4",
+                        "error": "#ffb4ab",
+                        "on-error-container": "#ffdad6",
+                        "tertiary": "#6fd8cc",
+                        "on-primary-fixed": "#410007",
+                        "surface-container-low": "#1b1b20",
+                        "surface-container": "#1f1f25",
+                        "on-tertiary-container": "#00302c",
+                        "primary-fixed": "#ffdad8",
+                        "tertiary-fixed-dim": "#6fd8cc",
+                        "on-secondary-fixed-variant": "#554600",
+                        "outline-variant": "#5b403f",
+                        "tertiary-fixed": "#8cf4e8",
+                        "secondary-container": "#fad100",
+                        "primary": "#ffb3b1",
+                        "background": "#131318",
+                        "surface-dim": "#131318",
+                        "inverse-on-surface": "#303036"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Epilogue"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- Fixed SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-[#0e0e13] border-r border-white/5 flex flex-col py-8 z-50">
+<div class="px-8 mb-12">
+<h1 class="text-2xl font-black italic tracking-tighter text-[#ff535b] font-headline">MangaShop</h1>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active State: Dashboard -->
+<a class="flex items-center gap-4 text-[#ff535b] border-r-4 border-[#ff535b] bg-white/5 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase transition-all translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span>Manga Management</span>
+</a>
+<a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span>Orders</span>
+</a>
+<a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Customers</span>
+</a>
+<a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-gradient-to-br from-primary-container to-[#92001c] text-on-primary-container font-headline font-bold uppercase tracking-widest py-4 text-xs rounded-sm hover:brightness-110 transition-all">
+                New Release
+            </button>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-[#131318]/60 backdrop-blur-xl border-b border-white/5 flex justify-between items-center px-8 z-40">
+<div class="flex items-center bg-surface-container-low rounded-full px-4 py-1.5 w-96 border border-white/5">
+<span class="material-symbols-outlined text-white/40 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-white/60 w-full placeholder:text-white/20" placeholder="Tìm kiếm manga, đơn hàng..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative cursor-pointer hover:text-white transition-colors">
+<span class="material-symbols-outlined text-white/60">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-[#ff535b] rounded-full border-2 border-[#131318]"></span>
+</div>
+<span class="material-symbols-outlined text-white/60 cursor-pointer hover:text-white transition-colors">settings</span>
+<div class="flex items-center gap-3 ml-4">
+<img alt="Admin profile" class="w-8 h-8 rounded-full border border-white/10" data-alt="Close-up portrait of a professional man with glasses in low key cinematic lighting, dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBIioKPUFJLOn3thQCxobYKY0Ec3nIi0lbWynAdYYqCsfYY8qhxTQwif_IOwpHry5anA5pIuGGkBTvu4nVCNB9OP9_dLyhMGsgpPuXdKq7SvQLp8MewNxGwok-q0euw6fnmIEM2MEnK8Zj9ok5a2j8EW7ENj5iuicUhgSBbsu3uSeR8vSa-BqQD8xgNj8vy5LvZZNLakisZbDoRVOU0tPV6NnyxKmNdJAmngABDCuZ40t3MU70Duu7cgbl-UMeIvkSGxboPXHaAVvz"/>
+<div class="hidden lg:block text-left">
+<p class="text-xs font-bold text-white uppercase tracking-wider">Admin Panel</p>
+<p class="text-[10px] text-white/40 uppercase">The Cinematic Collector</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 mt-16 p-8 min-h-screen">
+<!-- Welcome Header -->
+<header class="mb-12">
+<h2 class="text-4xl font-black text-white font-headline tracking-tighter uppercase mb-2">Chào mừng trở lại, Admin!</h2>
+<p class="text-white/40 font-body">Đây là tổng quan về cửa hàng manga của bạn trong 24h qua.</p>
+</header>
+<!-- Metric Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<div class="bg-surface-container border border-white/5 p-6 rounded-xl hover:bg-surface-container-high transition-colors">
+<p class="text-xs font-headline font-bold text-white/40 tracking-widest uppercase mb-4">Total Revenue</p>
+<h3 class="text-3xl font-black text-white font-headline tracking-tighter">142.500.000đ</h3>
+<div class="mt-4 flex items-center text-[#6fd8cc] text-xs">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+<span>+12.5% so với tháng trước</span>
+</div>
+</div>
+<div class="bg-surface-container border border-white/5 p-6 rounded-xl hover:bg-surface-container-high transition-colors">
+<p class="text-xs font-headline font-bold text-white/40 tracking-widest uppercase mb-4">New Orders</p>
+<h3 class="text-3xl font-black text-white font-headline tracking-tighter">84</h3>
+<div class="mt-4 flex items-center text-[#ff535b] text-xs">
+<span class="material-symbols-outlined text-sm mr-1">shopping_bag</span>
+<span>12 đơn hàng đang chờ xử lý</span>
+</div>
+</div>
+<div class="bg-surface-container border border-white/5 p-6 rounded-xl hover:bg-surface-container-high transition-colors">
+<p class="text-xs font-headline font-bold text-white/40 tracking-widest uppercase mb-4">Traffic</p>
+<h3 class="text-3xl font-black text-white font-headline tracking-tighter">12.4K</h3>
+<div class="mt-4 flex items-center text-[#6fd8cc] text-xs">
+<span class="material-symbols-outlined text-sm mr-1">visibility</span>
+<span>Tăng 5% lượt xem trang</span>
+</div>
+</div>
+<div class="bg-surface-container border border-white/5 p-6 rounded-xl hover:bg-surface-container-high transition-colors">
+<p class="text-xs font-headline font-bold text-white/40 tracking-widest uppercase mb-4">Low Stock</p>
+<h3 class="text-3xl font-black text-white font-headline tracking-tighter">07</h3>
+<div class="mt-4 flex items-center text-secondary text-xs">
+<span class="material-symbols-outlined text-sm mr-1">warning</span>
+<span>Cần nhập thêm hàng ngay</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Recent Orders Table -->
+<div class="lg:col-span-2 bg-surface-container-low rounded-xl p-8 border border-white/5">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-xl font-black text-white font-headline tracking-tight uppercase">Đơn hàng gần đây</h3>
+<button class="text-xs font-bold text-secondary uppercase border-b border-secondary/30 pb-1">Xem tất cả</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-y-4">
+<thead class="text-white/20 text-[10px] uppercase tracking-widest font-bold">
+<tr>
+<th class="pb-2 px-4">Mã ĐH</th>
+<th class="pb-2 px-4">Tên Khách</th>
+<th class="pb-2 px-4">Sản phẩm</th>
+<th class="pb-2 px-4">Tổng tiền</th>
+<th class="pb-2 px-4">Trạng thái</th>
+</tr>
+</thead>
+<tbody class="text-sm font-body">
+<tr class="bg-surface-container-high group hover:bg-surface-container-highest transition-colors">
+<td class="py-4 px-4 rounded-l-lg font-mono text-white/60">#MS-9021</td>
+<td class="py-4 px-4 font-semibold">Minh Tuấn</td>
+<td class="py-4 px-4 italic text-white/80">Chainsaw Man Vol 12</td>
+<td class="py-4 px-4 font-bold">125.000đ</td>
+<td class="py-4 px-4 rounded-r-lg">
+<span class="bg-secondary-container/10 text-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border border-secondary-container/20">Pending</span>
+</td>
+</tr>
+<tr class="bg-surface-container-high group hover:bg-surface-container-highest transition-colors">
+<td class="py-4 px-4 rounded-l-lg font-mono text-white/60">#MS-9020</td>
+<td class="py-4 px-4 font-semibold">Hoàng Nam</td>
+<td class="py-4 px-4 italic text-white/80">Jujutsu Kaisen Vol 0</td>
+<td class="py-4 px-4 font-bold">95.000đ</td>
+<td class="py-4 px-4 rounded-r-lg">
+<span class="bg-[#6fd8cc]/10 text-[#6fd8cc] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border border-[#6fd8cc]/20">Completed</span>
+</td>
+</tr>
+<tr class="bg-surface-container-high group hover:bg-surface-container-highest transition-colors">
+<td class="py-4 px-4 rounded-l-lg font-mono text-white/60">#MS-9019</td>
+<td class="py-4 px-4 font-semibold">Bích Phượng</td>
+<td class="py-4 px-4 italic text-white/80">Spy x Family Vol 9</td>
+<td class="py-4 px-4 font-bold">85.000đ</td>
+<td class="py-4 px-4 rounded-r-lg">
+<span class="bg-[#6fd8cc]/10 text-[#6fd8cc] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border border-[#6fd8cc]/20">Completed</span>
+</td>
+</tr>
+<tr class="bg-surface-container-high group hover:bg-surface-container-highest transition-colors">
+<td class="py-4 px-4 rounded-l-lg font-mono text-white/60">#MS-9018</td>
+<td class="py-4 px-4 font-semibold">Gia Bảo</td>
+<td class="py-4 px-4 italic text-white/80">One Piece Vol 105</td>
+<td class="py-4 px-4 font-bold">75.000đ</td>
+<td class="py-4 px-4 rounded-r-lg">
+<span class="bg-secondary-container/10 text-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border border-secondary-container/20">Pending</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Top Bestseller Column -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-white/5">
+<h3 class="text-xl font-black text-white font-headline tracking-tight uppercase mb-8">Top Bestsellers</h3>
+<div class="space-y-6">
+<div class="flex items-center gap-4 group">
+<div class="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-xl">
+<img alt="Chainsaw Man cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Manga cover of Chainsaw Man featuring dark, edgy illustration style with vibrant orange accents on a dark shelf" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxEpVPep8MRmXoYAfzWbMKDhngIhMsPfDsO5OO25njRv6Xr3_6navbQDQantHaCevpZ6C2FCPYxGApWWnuwTOIlo6ko8eJIUin4RMF0-9Id8Omr6YkxUqgt7F_Un_r9imoGPFQsHn0m9EsMPHa25PbiLS0m_5Kc4hJa8GRhwVgG3wDod73pnIweQ6iVGjhYopPHnfSri4DNoE9fqW-j1FAPmJx1J_R-dWucV66X11g4bizJeabgw9CGRznycYhSSjwDw4FqDTZVHRw"/>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-primary tracking-widest uppercase mb-1">#1 Selling</p>
+<h4 class="text-white font-headline font-bold text-sm leading-tight mb-1">Chainsaw Man Vol 12</h4>
+<p class="text-[10px] text-white/40 uppercase">245 Units Sold</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-xl">
+<img alt="Spy x Family cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Stylized anime manga cover with pastel colors and sharp line art featuring a family portrait in a cinematic aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkVN18xzX7HyaQalRkBrhIWJFAFafWPR5a8QABZJTdUBjO38Ae_N5oZZNHNtEDvfTU5d8tepJCrZ2SJvy2F6MgLknfSyjcYGeQLD3qaD28KwaB4NrhQhMQqZJuCl493vyDmuDoOaSDJgU7EepTy1As5GzluzgUvXk0NQe07-jyQ8Zwmohvqewu0DDJ-S7vi-wBdELY8WJj1Q-k3Eg1_m2vnJ-wCeIQXDoHxDSG6-I8jqw8zZZHYyEG3MuCW9FbeKiZmOK8y3rb816E"/>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-white/40 tracking-widest uppercase mb-1">#2 Selling</p>
+<h4 class="text-white font-headline font-bold text-sm leading-tight mb-1">Spy x Family Vol 10</h4>
+<p class="text-[10px] text-white/40 uppercase">198 Units Sold</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-xl">
+<img alt="Jujutsu Kaisen cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Dark dramatic manga illustration with purple and blue energy effects on a matte black book cover background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHrcbX9MNDz83Z0Mm3P6hO-7GPpcVZ9xgNn6p5OJiCi5YYdvj2t58wWEt5ZfNrIwftnlzvkdSWdMrF_I1UUWLYzfQ82Cc3TlDwQ6PC9PQdrM0IM_Yylr2aE2trQQk-GfdE65XYc0Kt63VEZsEGJUbfeDgUAy9LsU8iHUU0_qhLuWMr4YXo_OarwIM4dhY6mtV0Wn2kvMQ7IGOnA5RNt3vJAFOPfrpagkT2xrKTw1HV3zbcYTSt-AH4MQQYajF8WNfCcTi0iNvh3zpw"/>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-white/40 tracking-widest uppercase mb-1">#3 Selling</p>
+<h4 class="text-white font-headline font-bold text-sm leading-tight mb-1">Jujutsu Kaisen Vol 21</h4>
+<p class="text-[10px] text-white/40 uppercase">167 Units Sold</p>
+</div>
+</div>
+</div>
+<div class="mt-12 p-6 bg-[#ff535b]/10 rounded-xl border border-[#ff535b]/20 relative overflow-hidden">
+<div class="relative z-10">
+<p class="text-[10px] font-headline font-bold text-[#ff535b] tracking-widest uppercase mb-1">Inventory Alert</p>
+<h4 class="text-white font-headline font-bold text-xs uppercase leading-tight">Stock is running low on 3 top titles.</h4>
+<button class="mt-4 text-[10px] font-black text-white underline underline-offset-4 uppercase">Reorder Now</button>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-[#ff535b]/10 rotate-12" data-icon="inventory_2">inventory_2</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

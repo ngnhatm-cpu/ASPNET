@@ -13,6 +13,8 @@ public class Category
     [MaxLength(500)]
     public string? Description { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     // Navigation property: 1 Category → nhiều Manga
     public ICollection<Manga> Mangas { get; set; } = new List<Manga>();
 }

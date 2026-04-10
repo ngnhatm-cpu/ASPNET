@@ -16,28 +16,48 @@ public class ContentController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IWatermarkService _watermarkService;
+    private readonly IWebHostEnvironment _env;
 
-    public ContentController(AppDbContext context, IWatermarkService watermarkService)
+    public ContentController(AppDbContext context, IWatermarkService watermarkService, IWebHostEnvironment env)
     {
         _context = context;
         _watermarkService = watermarkService;
+        _env = env;
     }
 
     // GET: api/content/read/5
     [HttpGet("read/{chapterId}")]
-    [AllowAnonymous] // Cho phép khách vãng lai đọc chương miễn phí
+    [AllowAnonymous]
     public async Task<IActionResult> ReadChapter(int chapterId)
     {
         var chapter = await _context.Chapters.FindAsync(chapterId);
         if (chapter == null) return NotFound();
 
+        var mangaId = chapter.MangaId;
+        var currentOrder = chapter.OrderIndex;
+
+        var prevChapterId = await _context.Chapters
+            .Where(c => c.MangaId == mangaId && c.OrderIndex < currentOrder)
+            .OrderByDescending(c => c.OrderIndex)
+            .Select(c => (int?)c.Id)
+            .FirstOrDefaultAsync();
+
+        var nextChapterId = await _context.Chapters
+            .Where(c => c.MangaId == mangaId && c.OrderIndex > currentOrder)
+            .OrderBy(c => c.OrderIndex)
+            .Select(c => (int?)c.Id)
+            .FirstOrDefaultAsync();
+
         // 1. Nếu chương MIỄN PHÍ (Price = 0) -> Cho đọc luôn
         if (chapter.Price == 0)
         {
             return Ok(new { 
+                mangaId = chapter.MangaId,
                 chapterTitle = chapter.Title,
                 isFree = true,
-                pages = GetDemoPages(chapter.FilePath)
+                pages = GetDemoPages(chapter.FilePath),
+                prevChapterId,
+                nextChapterId
             });
         }
 
@@ -49,12 +69,25 @@ public class ContentController : ControllerBase
         var hasAccess = await _context.UserLibraries.AnyAsync(ul => ul.UserId == userId && ul.ChapterId == chapterId);
         
         if (!hasAccess)
-            return Forbid(); // Trả về 403 nếu chương có phí mà chưa mua
+        {
+            // Trả về 403 kèm thông tin cơ bản để hiện Paywall trong Reader
+            return StatusCode(403, new { 
+                message = "Bạn chưa sở hữu chương này",
+                mangaId = chapter.MangaId,
+                chapterTitle = chapter.Title,
+                price = chapter.Price,
+                prevChapterId,
+                nextChapterId
+            });
+        }
 
         return Ok(new { 
+            mangaId = chapter.MangaId,
             chapterTitle = chapter.Title,
             isFree = false,
             pages = GetDemoPages(chapter.FilePath),
+            prevChapterId,
+            nextChapterId,
             expiresIn = "5 minutes"
         });
     }
@@ -99,10 +132,25 @@ public class ContentController : ControllerBase
 
     private List<string> GetDemoPages(string? filePath)
     {
-        return new List<string> {
-            $"https://storage.cdn.com/{filePath}/page1.jpg?token=signed_demo",
-            $"https://storage.cdn.com/{filePath}/page2.jpg?token=signed_demo"
-        };
+        if (string.IsNullOrEmpty(filePath))
+            return new List<string>();
+
+        // Normalize path
+        var cleanPath = filePath.Replace('\\', '/').TrimStart('/');
+        var physicalPath = Path.Combine(_env.WebRootPath, cleanPath);
+
+        if (Directory.Exists(physicalPath))
+        {
+            var files = Directory.GetFiles(physicalPath)
+                                 .Where(f => f.EndsWith(".jpg") || f.EndsWith(".png") || f.EndsWith(".jpeg") || f.EndsWith(".webp"))
+                                 .OrderBy(f => f)
+                                 .Select(f => "/" + cleanPath + "/" + Path.GetFileName(f))
+                                 .ToList();
+            return files;
+        }
+
+        // Return empty if not found so UI displays error/empty instead of fake data
+        return new List<string>();
     }
 
     private byte[] CreateDummyImage()

@@ -59,15 +59,28 @@ public class ChaptersController : ControllerBase
     // PUT: api/chapters/5 (Admin Only)
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> PutChapter(int id, Chapter chapter)
+    public async Task<IActionResult> PutChapter(int id, Chapter chapterData)
     {
-        if (id != chapter.Id)
+        if (id != chapterData.Id)
             return BadRequest(new { message = "Id không khớp" });
 
-        if (!_context.Mangas.Any(m => m.Id == chapter.MangaId))
+        var existingChapter = await _context.Chapters.FindAsync(id);
+        if (existingChapter == null)
+            return NotFound(new { message = "Không tìm thấy chương" });
+
+        if (!_context.Mangas.Any(m => m.Id == chapterData.MangaId))
             return BadRequest(new { message = "Manga không tồn tại" });
 
-        _context.Entry(chapter).State = EntityState.Modified;
+        // Chỉ cập nhật các trường cần thiết
+        existingChapter.Title = chapterData.Title;
+        existingChapter.Price = chapterData.Price;
+        existingChapter.OrderIndex = chapterData.OrderIndex;
+        
+        // Chỉ cập nhật filePath nếu nó được gửi lên (không null)
+        if (!string.IsNullOrEmpty(chapterData.FilePath))
+        {
+            existingChapter.FilePath = chapterData.FilePath;
+        }
 
         try { await _context.SaveChangesAsync(); }
         catch (DbUpdateConcurrencyException)
@@ -102,6 +115,7 @@ public class ChaptersController : ControllerBase
             Title = c.Title,
             Price = c.Price,
             OrderIndex = c.OrderIndex,
+            FilePath = c.FilePath,
             CreatedAt = c.CreatedAt
         };
     }

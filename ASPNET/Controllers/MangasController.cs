@@ -4,6 +4,7 @@ using ASPNET.Data;
 using ASPNET.Models;
 using ASPNET.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ASPNET.Controllers;
 
@@ -25,7 +26,7 @@ public class MangasController : ControllerBase
         var mangas = await _context.Mangas
             .Include(m => m.Category)
             .Include(m => m.Chapters)
-            .Select(m => MapToDto(m))
+            .Select(m => MapToDto(m, null))
             .ToListAsync();
 
         return Ok(mangas);
@@ -43,7 +44,19 @@ public class MangasController : ControllerBase
         if (manga == null)
             return NotFound(new { message = $"Không tìm thấy truyện có Id = {id}" });
 
-        return Ok(MapToDto(manga));
+        // Check purchased chapters if logged in
+        HashSet<int> purchasedChapterIds = new();
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+        {
+            var purchasedList = await _context.OrderItems
+                .Where(oi => oi.Order!.UserId == userId && oi.Chapter!.MangaId == id)
+                .Select(oi => oi.ChapterId)
+                .ToListAsync();
+            purchasedChapterIds = purchasedList.ToHashSet();
+        }
+
+        return Ok(MapToDto(manga, purchasedChapterIds));
     }
 
     // GET: api/mangas/category/3
@@ -54,7 +67,7 @@ public class MangasController : ControllerBase
             .Include(m => m.Category)
             .Include(m => m.Chapters)
             .Where(m => m.CategoryId == categoryId)
-            .Select(m => MapToDto(m))
+            .Select(m => MapToDto(m, null))
             .ToListAsync();
 
         return Ok(mangas);
@@ -71,7 +84,7 @@ public class MangasController : ControllerBase
             .Include(m => m.Category)
             .Include(m => m.Chapters)
             .Where(m => m.Title.Contains(keyword) || (m.Author != null && m.Author.Contains(keyword)))
-            .Select(m => MapToDto(m))
+            .Select(m => MapToDto(m, null))
             .ToListAsync();
 
         return Ok(mangas);
@@ -127,8 +140,9 @@ public class MangasController : ControllerBase
         return Ok(new { message = $"Đã xóa truyện '{manga.Title}'" });
     }
 
-    private static MangaDto MapToDto(Manga m)
+    private static MangaDto MapToDto(Manga m, HashSet<int>? purchasedChapterIds = null)
     {
+        purchasedChapterIds ??= new HashSet<int>();
         return new MangaDto
         {
             Id = m.Id,
@@ -146,7 +160,8 @@ public class MangasController : ControllerBase
                 Title = c.Title,
                 Price = c.Price,
                 OrderIndex = c.OrderIndex,
-                CreatedAt = c.CreatedAt
+                CreatedAt = c.CreatedAt,
+                IsPurchased = purchasedChapterIds.Contains(c.Id)
             }).OrderBy(c => c.OrderIndex).ToList()
         };
     }

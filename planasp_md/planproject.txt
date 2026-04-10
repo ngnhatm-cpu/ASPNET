@@ -1,0 +1,82 @@
+TÀI LIỆU ĐẶC TẢ NGHIỆP VỤ & GIAO DIỆN (BRD)
+Dự án: Nền tảng Đọc Truyện Tranh Online (Mô hình Freemium tích hợp VNPay Sandbox)
+I. TỔNG QUAN DỰ ÁN
+Xây dựng một hệ thống website/ứng dụng cho phép người dùng đọc truyện tranh trực tuyến. Dự án áp dụng mô hình kinh doanh Freemium: miễn phí các chương đầu để thu hút độc giả và yêu cầu trả phí bằng tiền ảo ("Xu") để mở khóa các chương mới. Hệ thống tích hợp cổng thanh toán VNPay (môi trường Sandbox) để giả lập luồng nạp Xu, đảm bảo tính thực tiễn và trọn vẹn của một quy trình thương mại điện tử cốt lõi.
+II. PHÂN TÍCH TÁC NHÂN (ACTORS)
+Khách vãng lai (Guest): Có thể tìm kiếm truyện, đọc các chương miễn phí và xem bình luận.
+Thành viên (Member): Người dùng đã đăng nhập. Sở hữu Ví Xu cá nhân. Có quyền nạp Xu, mở khóa truyện, bình luận, đánh giá và quản lý tủ sách cá nhân.
+Quản trị viên (Admin): Người vận hành hệ thống. Có quyền thêm/sửa/xóa truyện, quản lý người dùng, cộng/trừ Xu thủ công và kiểm duyệt nội dung.
+Hệ thống thanh toán (VNPay Sandbox): Đối tác thứ 3 xử lý giao dịch nạp tiền bằng thẻ giả lập và phản hồi kết quả về hệ thống qua Webhook.
+III. ĐẶC TẢ NGHIỆP VỤ CỐT LÕI
+1. Module Tài khoản & Tương tác
+Xác thực: Đăng ký, đăng nhập bằng Email và Mật khẩu.
+Tủ sách (Bookmark): Lưu trữ các bộ truyện yêu thích và tự động ghi nhớ vị trí Chapter đang đọc dở.
+Tương tác: Cho phép thành viên chấm điểm (1-5 sao) tính trung bình và để lại bình luận dưới mỗi Chapter.
+2. Module Nội dung & Trình đọc
+Khám phá: Phân loại truyện theo danh mục (Thể loại, Trạng thái, Bảng xếp hạng).
+Chi tiết truyện: Hiển thị thông tin tổng quan. Các Chapter được dán nhãn rõ ràng: [Miễn phí] hoặc [Khóa - X Xu].
+Trình đọc (Reader): Hiển thị ảnh cuộn dọc (Webtoon style). Tối ưu hóa trải nghiệm tải ảnh nhanh chóng.
+3. Module Nạp tiền & Ví Xu
+Ví điện tử nội bộ: Quản lý số dư (Balance) của từng User.
+Nạp tiền giả lập: Tích hợp VNPay Sandbox. Xử lý webhook an toàn để tự động cập nhật số dư khi thanh toán thành công.
+Mở khóa nội dung: Kiểm tra số dư, trừ Xu, ghi nhận quyền sở hữu vào cơ sở dữ liệu và hiển thị nội dung Chapter bị khóa.
+IV. CÁC LUỒNG XỬ LÝ CHÍNH (BUSINESS FLOWS)
+Luồng 1: Nạp Xu qua VNPay Sandbox
+User chọn gói nạp (VD: 20,000 VNĐ = 200 Xu).
+Hệ thống tạo Order (Trạng thái: Pending), sinh mã URL bảo mật và chuyển hướng sang màn hình VNPay.
+User nhập thẻ Test (do VNPay cung cấp).
+VNPay xử lý và gọi API Webhook trả kết quả về Backend.
+Backend xác thực chữ ký (Signature). Nếu hợp lệ: Đổi trạng thái Order thành Success và Cộng 200 Xu vào Ví User.
+Luồng 2: Mua và Đọc Chapter Trả phí
+User click vào Chapter yêu cầu 50 Xu.
+Hệ thống kiểm tra quyền sở hữu. Nếu đã mua trong quá khứ $\rightarrow$ Hiển thị ảnh ngay lập tức.
+Nếu chưa mua, kiểm tra số dư Ví:
+Nếu Số dư $\ge$ 50: Trừ 50 Xu, lưu lịch sử giao dịch mua, mở khóa và hiển thị ảnh.
+Nếu Số dư $<$ 50: Chặn truy cập, hiển thị thông báo "Không đủ Xu" và gợi ý nút Nạp thêm.
+V. CHI TIẾT GIAO DIỆN NGƯỜI DÙNG (USER UI/UX)
+1. Thanh điều hướng (Header)
+Cụm Logo và Thanh tìm kiếm (có gợi ý tự động).
+Cụm User: Hiển thị Avatar, Tên, Số dư Xu hiện tại. Nút Dropdown (Tủ sách, Lịch sử nạp/tiêu, Hồ sơ). Nút "Nạp Xu" nổi bật.
+2. Trang Chủ (Homepage)
+Banner cuộn (Slider) cho Top truyện nổi bật.
+Danh sách dạng lưới: Truyện mới cập nhật (kèm thời gian), Truyện Hot.
+Bảng xếp hạng (Sidebar bên phải): Phân chia theo Top Lượt xem, Top Đánh giá.
+3. Trang Chi tiết Truyện
+Phần Top: Ảnh bìa, Tên truyện, Tác giả, Tag thể loại, Điểm số, Tóm tắt. Cụm nút: "Đọc từ đầu", "Đọc tiếp", "Theo dõi".
+Phần Body: Danh sách Chapter sắp xếp từ mới đến cũ. Gắn icon 🔒 (Ổ khóa) và Giá Xu cho các chương trả phí.
+Phần Bottom: Khu vực nhập và hiển thị bình luận có phân trang.
+4. Màn hình Trình Đọc (Web Reader)
+Thanh công cụ (ẩn hiện khi cuộn): Nút Back, Tên Chapter, Nút Next/Prev.
+Khung hiển thị ảnh truyện theo chiều dọc.
+Popup Thanh toán (Paywall): Khi chuyển sang Chapter khóa, màn hình tối lại, hiện thông báo: "Chapter này yêu cầu X Xu. Số dư: Y Xu. [Xác nhận mở] / [Hủy]".
+5. Dashboard Cá nhân
+Tủ sách: Truyện đang theo dõi, Truyện đọc gần đây (hiển thị tiến độ).
+Nạp Xu: Chọn gói $\rightarrow$ Thanh toán.
+Lịch sử: Bảng thống kê Nạp tiền (Mã GD, Số tiền, Trạng thái) và Bảng thống kê Tiêu Xu (Mua chapter nào, trừ bao nhiêu Xu, Thời gian).
+VI. CHI TIẾT GIAO DIỆN QUẢN TRỊ (ADMIN PANEL)
+1. Bảng điều khiển (Dashboard)
+Thống kê tổng quan: Số User, Số Truyện, Tổng doanh thu giả lập.
+Biểu đồ trực quan theo ngày/tháng.
+2. Quản lý Truyện & Chapter
+Form Thêm/Sửa thông tin truyện (Bìa, text, thể loại).
+Màn hình quản lý Chapter trong từng truyện: Upload nhiều ảnh cùng lúc (Drag & drop), sắp xếp thứ tự ảnh. Cài đặt thuộc tính Miễn phí hoặc Trả phí (nhập số Xu cụ thể).
+3. Quản lý Người dùng & Giao dịch
+User Manager: Danh sách thành viên. Cung cấp nút công cụ "Cộng/Trừ Xu thủ công" để điều chỉnh số dư trực tiếp.
+Transaction Log: Bảng đối soát toàn bộ lịch sử giao dịch từ VNPay Sandbox gửi về (phục vụ mục đích dò lỗi).
+VII. YÊU CẦU KIỂM THỬ ĐẶC THÙ
+Hệ thống yêu cầu các kịch bản kiểm thử (Test Cases) chặt chẽ cho các luồng nghiệp vụ cốt lõi:
+Bảo mật giao dịch: Mô phỏng các thẻ thanh toán bị từ chối, nhập sai OTP để đảm bảo hệ thống không ghi nhận nhầm giao dịch thành công.
+Xử lý đồng thời (Concurrency): Kiểm tra hành vi click liên tục vào nút "Mua Chapter" để chặn việc hệ thống trừ Xu nhiều lần cho cùng một sản phẩm.
+Phân quyền truy cập: Xác minh các Endpoint API trả về ảnh truyện trả phí phải bị chặn hoàn toàn nếu người dùng (hoặc Guest) truyền lên Token không hợp lệ hoặc chưa có lịch sử mua Chapter đó.
+
+Làm theo thứ tự này:
+1.Auth (login/register) 
+2.Truyện + chapter (CRUD) 
+3.Reader đọc free 
+4.Ví Xu 
+5.Mua chapter 
+6.Sau đó mới: 
+1.VNPay 
+2.concurrency 
+3.tối ưu
+

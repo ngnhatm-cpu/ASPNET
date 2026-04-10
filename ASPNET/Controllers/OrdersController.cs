@@ -28,6 +28,7 @@ public class OrdersController : ControllerBase
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         IQueryable<Order> query = _context.Orders
+            .Include(o => o.User)
             .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Chapter)
                     .ThenInclude(c => c!.Manga);
@@ -125,6 +126,7 @@ public class OrdersController : ControllerBase
             OrderDate = o.OrderDate,
             TotalAmount = o.TotalAmount,
             Status = o.Status,
+            CustomerName = o.User?.Username ?? "N/A",
             Items = o.OrderItems.Select(oi => new OrderItemDto
             {
                 ChapterId = oi.ChapterId,

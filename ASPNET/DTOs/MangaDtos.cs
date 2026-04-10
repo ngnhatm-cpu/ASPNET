@@ -20,5 +20,7 @@ public class ChapterDto
     public string Title { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public int OrderIndex { get; set; }
+    public string? FilePath { get; set; }
+    public bool IsPurchased { get; set; }
     public DateTime CreatedAt { get; set; }
 }

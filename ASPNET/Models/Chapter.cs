@@ -18,9 +18,8 @@ public class Chapter
     [Column(TypeName = "decimal(18,2)")]
     public decimal Price { get; set; }
 
-    [Required]
     [MaxLength(500)]
-    public string FilePath { get; set; } = string.Empty; // Thư mục lưu ảnh hoặc file zip
+    public string? FilePath { get; set; } // Thư mục lưu ảnh hoặc file zip
 
     public int OrderIndex { get; set; } // Tập 1, Tập 2...
 

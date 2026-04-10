@@ -102,17 +102,17 @@ var app = builder.Build();
 // MIDDLEWARE PIPELINE
 // =============================================
 
-if (app.Environment.IsDevelopment())
+// Cho phép Swagger luôn hiển thị (kể cả ở Production trên Render)
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "MangaStore API v1");
-    });
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "MangaStore API v1");
+    options.RoutePrefix = "swagger"; // Truy cập tại /swagger
+});
 
-app.MapGet("/", () => Results.Redirect("/swagger"));
 
+app.UseDefaultFiles(); // Tự động nhận index.html
+app.UseStaticFiles(); // Phục vụ file từ wwwroot
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 
