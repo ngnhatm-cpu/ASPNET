@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Trang Chủ | MangaShop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary-container": "#ff535b",
+                "secondary-fixed": "#ffe171",
+                "on-primary-container": "#5b000e",
+                "on-surface": "#e4e1e9",
+                "primary": "#ffb3b1",
+                "on-surface-variant": "#e4bebc",
+                "surface-container-low": "#1b1b20",
+                "surface-container-highest": "#35343a",
+                "surface-container-high": "#2a292f",
+                "secondary": "#fff0c4",
+                "surface-container": "#1f1f25",
+                "surface-container-lowest": "#0e0e13",
+                "secondary-container": "#fad100",
+                "surface": "#131318",
+                "outline": "#ab8987"
+              },
+              fontFamily: {
+                "headline": ["Epilogue"],
+                "body": ["Be Vietnam Pro"]
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #0A0A0F; color: #e4e1e9; overflow-x: hidden; min-height: 100vh; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        h1, h2, h3, .font-headline { font-family: 'Epilogue', sans-serif; }
+        
+        /* [UI_USER] ANIMATIONS */
+        .hero-gradient { background: radial-gradient(circle at center, rgba(255, 83, 91, 0.1) 0%, transparent 80%); }
+        .ticker-container { overflow: hidden; white-space: nowrap; }
+        .ticker-content { display: inline-block; animation: scroll-left 30s linear infinite; }
+        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        
+        @keyframes fade-up-stagger { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fade-up-stagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        
+        @keyframes lightning-flicker { 0%, 90%, 100% { opacity: 0; } 92%, 96% { opacity: 0.8; } 93% { opacity: 0; } 95% { opacity: 1; } }
+        .lightning { animation: lightning-flicker 4s infinite; z-index: 5; pointer-events: none; }
+
+        @keyframes blossom-fall { 0% { transform: translate(0, 0) rotate(0deg); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translate(-400px, 800px) rotate(720deg); opacity: 0; } }
+        .blossom { animation: blossom-fall linear infinite; z-index: 5; pointer-events: none; }
+
+        @keyframes dust-float { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 0.2; } 80% { opacity: 0.2; } 100% { transform: translateY(-100px); opacity: 0; } }
+        .dust { animation: dust-float linear infinite; z-index: 5; pointer-events: none; }
+
+        @keyframes embers-rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 100% { transform: translateY(-300px) scale(0.5); opacity: 0; } }
+        .ember { animation: embers-rise linear infinite; z-index: 5; pointer-events: none; }
+
+        .manga-card:hover img { transform: scale(1.05); }
+        .manga-card img { transition: transform 0.5s ease; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- Nav Bar (Restored & Enhanced) -->
+<nav class="fixed top-0 w-full z-[100] bg-[#0A0A0F]/60 backdrop-blur-xl border-b border-white/5 transition-all duration-300">
+    <div class="flex justify-between items-center w-full px-8 py-3 max-w-screen-2xl mx-auto gap-8">
+        <!-- Logo -->
+        <a href="index.html" class="text-2xl font-black tracking-tighter text-primary font-headline uppercase italic shrink-0">
+            MangaShop
+        </a>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-md relative hidden lg:block">
+            <input type="text" placeholder="Tìm kiếm truyện..." class="w-full bg-white/5 border border-white/10 rounded-full px-5 py-2 text-sm focus:outline-none focus:border-primary transition-all">
+            <span class="material-symbols-outlined absolute right-4 top-2 text-white/20">search</span>
+        </div>
+
+        <!-- Nav Links -->
+        <div class="hidden xl:flex items-center gap-8 font-headline uppercase font-bold text-[10px] tracking-[0.2em]">
+            <a class="text-primary" href="index.html">Trang Chủ</a>
+            <a class="text-white/40 hover:text-white transition-colors" href="#">Xếp hạng</a>
+            <a class="text-white/40 hover:text-white transition-colors" href="#">Thể loại</a>
+        </div>
+
+        <!-- Auth Area (Dynamic via app.js) -->
+        <div class="flex items-center gap-6 shrink-0" id="navAuthArea">
+            <!-- Loading state... -->
+            <div class="w-20 h-8 bg-white/5 animate-pulse rounded"></div>
+        </div>
+    </div>
+</nav>
+
+<!-- [2] HERO SECTION -->
+<section class="relative min-h-[90vh] flex items-center px-8 md:px-20 overflow-hidden pt-16" id="hero">
+    <div class="hero-gradient absolute inset-0 pointer-events-none z-0"></div>
+    <!-- Speed Lines Layer -->
+    <div class="absolute inset-0 pointer-events-none opacity-[0.05] z-0" style="background-image: repeating-linear-gradient(45deg, white, white 1px, transparent 1px, transparent 40px);"></div>
+    
+    <!-- Ambient Particles -->
+    <div class="absolute inset-0 pointer-events-none z-10">
+        <div class="ember absolute w-1 h-1 bg-primary rounded-full" style="bottom: 10%; left: 20%; animation-duration: 4s; animation-delay: 0.5s;"></div>
+        <div class="ember absolute w-1 h-1 bg-red-400 rounded-full" style="bottom: 5%; left: 40%; animation-duration: 5s; animation-delay: 1.2s;"></div>
+        <div class="ember absolute w-1.5 h-1.5 bg-red-500 rounded-full" style="bottom: 12%; left: 35%; animation-duration: 4.5s; animation-delay: 1.8s;"></div>
+        
+        <div class="blossom absolute w-3 h-2 bg-pink-300/20 rounded-full top-[-5%] right-[5%]" style="animation-duration: 6s;"></div>
+        <div class="blossom absolute w-2 h-2 bg-pink-400/20 rounded-full top-[-10%] right-[15%]" style="animation-duration: 7.5s;"></div>
+        
+        <div class="dust absolute w-1 h-1 bg-white/10 rounded-full left-[20%] top-[40%]" style="animation-duration: 5s;"></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-12 w-full z-20 relative pt-12">
+        <div class="flex flex-col justify-center space-y-8">
+            <h1 class="font-headline text-4xl md:text-6xl font-black leading-tight tracking-tighter text-on-surface uppercase">
+                <span class="inline-block animate-fade-up" style="animation-delay: 0.1s">ĐỌC MANGA</span>
+                <span class="inline-block animate-fade-up" style="animation-delay: 0.2s">THẢ GA</span>
+                <span class="inline-block animate-fade-up" style="animation-delay: 0.3s">—</span> <br/>
+                <span class="text-primary-container italic inline-block animate-fade-up" style="animation-delay: 0.4s">KHÔNG LO VỀ GIÁ</span>
+            </h1>
+            <p class="text-xl text-on-surface-variant max-w-md font-body">
+                Khám phá kho tàng truyện tranh bản quyền chất lượng cao. Trải nghiệm đọc mượt mà, cập nhật chương mới liên tục và sở hữu vĩnh viễn những bộ truyện yêu thích.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-4">
+                <button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline px-10 py-5 rounded-sm tracking-widest uppercase hover:brightness-110 transition-all font-black">ĐỌC NGAY</button>
+                <button class="border border-white/10 text-on-surface font-headline px-10 py-5 rounded-sm tracking-widest uppercase hover:bg-white/5 transition-all font-bold">Bảng Xếp Hạng</button>
+            </div>
+        </div>
+
+        <div class="relative flex items-center justify-center">
+            <div class="absolute w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full"></div>
+            <div id="heroFloatingStack" class="flex space-x-[-4rem] floating relative z-10">
+                <!-- 3 Bìa truyện sẽ được chèn qua js/app.js -->
+                <div class="w-48 md:w-64 aspect-[2/3] bg-surface-container rounded-xl shadow-2xl rotate-[-12deg] z-10 border border-white/10 animate-pulse"></div>
+                <div class="w-48 md:w-64 aspect-[2/3] bg-surface-container rounded-xl shadow-2xl z-20 border border-white/10 animate-pulse"></div>
+                <div class="w-48 md:w-64 aspect-[2/3] bg-surface-container rounded-xl shadow-2xl rotate-[12deg] z-10 border border-white/10 animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticker Bar -->
+    <div class="absolute bottom-0 left-0 w-full bg-surface-container-low py-4 border-y border-white/5 ticker-container z-40">
+        <div class="ticker-content font-headline text-sm tracking-[0.2em] text-white/40 space-x-12 uppercase font-bold">
+            <span>ĐỌC TRUYỆN ONLINE · HỖ TRỢ THANH TOÁN VNPAY · CẬP NHẬT CHƯƠNG MỚI MỖI NGÀY · TRẢI NGHIỆM ĐỘC QUYỀN · MUA TRUYỆN BẰNG XU · ĐỌC TRUYỆN ONLINE · HỖ TRỢ THANH TOÁN VNPAY · CẬP NHẬT CHƯƠNG MỚI MỖI NGÀY · TRẢI NGHIỆM ĐỘC QUYỀN · MUA TRUYỆN BẰNG XU ·</span>
+        </div>
+    </div>
+</section>
+
+
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-black font-headline uppercase tracking-tighter text-white">Mới Cập Nhật</h2>
+    </div>
+
+    <!-- Manga Grid -->
+    <div id="mangaGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <!-- Manga Card Templates -> Loaded via JS -->
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="relative z-10 w-full pt-16 pb-8 px-8 border-t border-white/5 bg-[#0A0A0F]">
+    <div class="max-w-screen-2xl mx-auto text-center">
+        <div class="text-xl font-black text-red-500 font-headline uppercase mb-4 italic">MangaShop</div>
+        <p class="text-sm text-white/40 font-medium tracking-wide mb-8">Nền tảng đọc truyện tranh bản quyền chất lượng cao lớn nhất Việt Nam.</p>
+        <p class="text-xs text-white/20 uppercase tracking-widest font-bold">&copy; 2026 MangaShop. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Quản lý Người dùng | MangaStore Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;900&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #0e0e13; color: #ffffff; }
+        h1, h2, h3, .font-headline { font-family: 'Epilogue', sans-serif; }
+    select option { background-color: #1f1f25; color: #ffffff; }
+    
+      .hero-gradient { background: radial-gradient(circle at top right, rgba(255, 83, 91, 0.15) 0%, transparent 60%); }
+      @keyframes embers-rise {
+        0% { transform: translateY(0) scale(1); opacity: 0; }
+        20% { opacity: 0.6; }
+        100% { transform: translateY(-300px) scale(0.5); opacity: 0; }
+      }
+      .ember { animation: embers-rise linear infinite; pointer-events: none; }
+</style>
+</head>
+<body class="text-white">
+
+<!-- Ambient Background Effects -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="hero-gradient absolute inset-0"></div>
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: repeating-linear-gradient(45deg, white, white 1px, transparent 1px, transparent 40px);"></div>
+    <div class="ember absolute w-1 h-1 bg-[#ffb3b1] rounded-full" style="bottom: 10%; left: 20%; animation-duration: 4s; animation-delay: 0.5s;"></div>
+    <div class="ember absolute w-1 h-1 bg-red-400 rounded-full" style="bottom: 5%; left: 40%; animation-duration: 5s; animation-delay: 1.2s;"></div>
+    <div class="ember absolute w-1 h-1 bg-orange-400 rounded-full" style="bottom: 15%; left: 60%; animation-duration: 3s; animation-delay: 0.2s;"></div>
+    <div class="ember absolute w-1 h-1 bg-[#ffb3b1] rounded-full" style="bottom: 8%; left: 80%; animation-duration: 6s; animation-delay: 2s;"></div>
+    <div class="ember absolute w-1.5 h-1.5 bg-red-500 rounded-full" style="bottom: 12%; left: 35%; animation-duration: 4.5s; animation-delay: 1.8s;"></div>
+</div>
+
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-[#0e0e13] border-r border-white/5 flex flex-col py-8 z-50">
+    <div class="px-8 mb-12">
+        <h1 class="text-2xl font-black italic tracking-tighter text-[#ff535b] font-headline">MangaShop</h1>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="categories.html">
+            <span class="material-symbols-outlined">category</span>
+            <span>Categories</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="mangas.html">
+            <span class="material-symbols-outlined">library_books</span>
+            <span>Manga & Chapters</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="orders.html">
+            <span class="material-symbols-outlined">shopping_cart</span>
+            <span>Orders</span>
+        </a>
+        <a class="flex items-center gap-4 text-[#ff535b] border-r-4 border-[#ff535b] bg-white/5 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase" href="users.html">
+            <span class="material-symbols-outlined">group</span>
+            <span>Users & Wallet</span>
+        </a>
+    </nav>
+</aside>
+
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-[#131318]/60 backdrop-blur-xl border-b border-white/5 flex justify-between items-center px-8 z-40">
+    <h2 class="text-white font-headline font-bold uppercase tracking-widest text-sm">Danh sách thành viên</h2>
+</header>
+
+<main class="relative z-10 ml-64 mt-16 p-8 min-h-screen">
+    <div class="bg-[#1b1b20] rounded-xl border border-white/5 overflow-hidden">
+        <table class="w-full text-left">
+            <thead class="bg-white/5 text-white/40 text-[10px] uppercase font-bold tracking-widest">
+                <tr>
+                    <th class="px-6 py-4">ID</th>
+                    <th class="px-6 py-4">Tên TRUY CẬP</th>
+                    <th class="px-6 py-4">Email</th>
+                    <th class="px-6 py-4">Quyền</th>
+                    <th class="px-6 py-4">Số dư (Xu)</th>
+                    <th class="px-6 py-4 text-right">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody" class="text-sm">
+                <!-- Data will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- User Modal (Edit Balance) -->
+<div id="userModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-6">
+    <div class="bg-[#1f1f25] w-full max-w-md rounded-2xl border border-white/10 p-8 shadow-2xl">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-2xl font-black text-white font-headline uppercase tracking-tighter">Nạp Xu / Sửa User</h3>
+            <button onclick="closeUserModal()" class="text-white/40 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <form id="userForm" class="space-y-6">
+            <input type="hidden" id="userId">
+            <div>
+                <label class="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Username</label>
+                <input type="text" id="username" readonly class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white/40 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Email</label>
+                <input type="text" id="email" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff535b]">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Số dư Xu (Balance)</label>
+                <input type="number" id="balance" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-[#6fd8cc] text-xl font-black focus:outline-none focus:border-[#ff535b]">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Quyền (Role)</label>
+                <select id="role" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none">
+                    <option value="Customer">Customer</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
+            <div class="flex gap-4 mt-8">
+                <button type="submit" class="flex-1 bg-[#6fd8cc] text-[#003733] font-bold py-4 rounded-lg uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-[#6fd8cc]/20">Lưu thay đổi</button>
+                <button type="button" onclick="closeUserModal()" class="flex-1 bg-white/5 text-white/60 font-bold py-4 rounded-lg uppercase tracking-widest hover:bg-white/10 transition-all">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/admin_users.js"></script>
+</body>
+</html>

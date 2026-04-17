@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MangaStore Admin Dashboard | Premium Manager</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #0e0e13; color: #ffffff; }
+        h1, h2, h3, .font-headline { font-family: 'Epilogue', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    select option { background-color: #1f1f25; color: #ffffff; }
+    
+      .hero-gradient { background: radial-gradient(circle at top right, rgba(255, 83, 91, 0.15) 0%, transparent 60%); }
+      @keyframes embers-rise {
+        0% { transform: translateY(0) scale(1); opacity: 0; }
+        20% { opacity: 0.6; }
+        100% { transform: translateY(-300px) scale(0.5); opacity: 0; }
+      }
+      .ember { animation: embers-rise linear infinite; pointer-events: none; }
+</style>
+</head>
+<body class="text-white selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- Ambient Background Effects -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="hero-gradient absolute inset-0"></div>
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: repeating-linear-gradient(45deg, white, white 1px, transparent 1px, transparent 40px);"></div>
+    <div class="ember absolute w-1 h-1 bg-[#ffb3b1] rounded-full" style="bottom: 10%; left: 20%; animation-duration: 4s; animation-delay: 0.5s;"></div>
+    <div class="ember absolute w-1 h-1 bg-red-400 rounded-full" style="bottom: 5%; left: 40%; animation-duration: 5s; animation-delay: 1.2s;"></div>
+    <div class="ember absolute w-1 h-1 bg-orange-400 rounded-full" style="bottom: 15%; left: 60%; animation-duration: 3s; animation-delay: 0.2s;"></div>
+    <div class="ember absolute w-1 h-1 bg-[#ffb3b1] rounded-full" style="bottom: 8%; left: 80%; animation-duration: 6s; animation-delay: 2s;"></div>
+    <div class="ember absolute w-1.5 h-1.5 bg-red-500 rounded-full" style="bottom: 12%; left: 35%; animation-duration: 4.5s; animation-delay: 1.8s;"></div>
+</div>
+
+<!-- Fixed SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-[#0e0e13] border-r border-white/5 flex flex-col py-8 z-50">
+    <div class="px-8 mb-12">
+        <h1 class="text-2xl font-black italic tracking-tighter text-[#ff535b] font-headline">MangaShop</h1>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="flex items-center gap-4 text-[#ff535b] border-r-4 border-[#ff535b] bg-white/5 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase transition-all translate-x-1 duration-300" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="categories.html">
+            <span class="material-symbols-outlined">category</span>
+            <span>Categories</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="mangas.html">
+            <span class="material-symbols-outlined">library_books</span>
+            <span>Manga & Chapters</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="orders.html">
+            <span class="material-symbols-outlined">shopping_cart</span>
+            <span>Orders</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="users.html">
+            <span class="material-symbols-outlined">group</span>
+            <span>Users & Wallet</span>
+        </a>
+    </nav>
+    <div class="px-6 mt-auto">
+        <button id="logoutBtn" class="w-full bg-white/5 text-white/60 font-headline font-bold uppercase tracking-widest py-3 text-[10px] rounded hover:bg-red-500/20 hover:text-red-500 transition-all border border-white/5">
+            Đăng xuất
+        </button>
+    </div>
+</aside>
+
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-[#131318]/60 backdrop-blur-xl border-b border-white/5 flex justify-between items-center px-8 z-40">
+    <div class="flex items-center bg-white/5 rounded-full px-4 py-1.5 w-96 border border-white/5">
+        <span class="material-symbols-outlined text-white/40 text-sm">search</span>
+        <input class="bg-transparent border-none focus:ring-0 text-sm text-white/60 w-full placeholder:text-white/20" placeholder="Tìm kiếm manga, khách hàng..." type="text"/>
+    </div>
+    <div class="flex items-center gap-6">
+        <div class="flex items-center gap-3 ml-4">
+            <div id="adminProfile" class="flex items-center gap-3">
+                <div class="text-right">
+                    <p id="adminName" class="text-xs font-bold text-white uppercase tracking-wider">Admin Panel</p>
+                    <p class="text-[10px] text-white/40 uppercase">Chủ cửa hàng</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff535b] to-[#92001c] flex items-center justify-center font-black text-white text-sm shadow-lg shadow-[#ff535b]/20">A</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Canvas -->
+<main class="relative z-10 ml-64 mt-16 p-8 min-h-screen">
+    <header class="mb-12">
+        <h2 class="text-4xl font-black text-white font-headline tracking-tighter uppercase mb-2">Quản trị cửa hàng</h2>
+        <p class="text-white/40 font-body">Tổng quan tình hình kinh doanh trong 24h qua.</p>
+    </header>
+
+    <!-- Metric Bento Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div class="bg-[#1f1f25] border border-white/5 p-6 rounded-xl">
+            <p class="text-[10px] font-headline font-bold text-white/40 tracking-widest uppercase mb-4">Tổng doanh thu</p>
+            <h3 id="statRevenue" class="text-3xl font-black text-white font-headline tracking-tighter">0đ</h3>
+            <div class="mt-4 flex items-center text-[#6fd8cc] text-[10px] font-bold uppercase tracking-wider">
+                <span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+                <span>Hoạt động ổn định</span>
+            </div>
+        </div>
+        <div class="bg-[#1f1f25] border border-white/5 p-6 rounded-xl">
+            <p class="text-[10px] font-headline font-bold text-white/40 tracking-widest uppercase mb-4">Đơn hàng mới</p>
+            <h3 id="statOrders" class="text-3xl font-black text-white font-headline tracking-tighter">0</h3>
+            <div class="mt-4 flex items-center text-[#ff535b] text-[10px] font-bold uppercase tracking-wider">
+                <span class="material-symbols-outlined text-sm mr-1">shopping_bag</span>
+                <span>Trong 24h qua</span>
+            </div>
+        </div>
+        <div class="bg-[#1f1f25] border border-white/5 p-6 rounded-xl">
+            <p class="text-[10px] font-headline font-bold text-white/40 tracking-widest uppercase mb-4">Người dùng</p>
+            <h3 id="statUsers" class="text-3xl font-black text-white font-headline tracking-tighter">0</h3>
+            <div class="mt-4 flex items-center text-[#6fd8cc] text-[10px] font-bold uppercase tracking-wider">
+                <span class="material-symbols-outlined text-sm mr-1">group</span>
+                <span>Tổng số thành viên</span>
+            </div>
+        </div>
+        <div class="bg-[#1f1f25] border border-white/5 p-6 rounded-xl">
+            <p class="text-[10px] font-headline font-bold text-white/40 tracking-widest uppercase mb-4">Tổng Chương truyện</p>
+            <h3 id="statChapters" class="text-3xl font-black text-white font-headline tracking-tighter">0</h3>
+            <div class="mt-4 flex items-center text-secondary text-[10px] font-bold uppercase tracking-wider">
+                <span class="material-symbols-outlined text-sm mr-1">inventory_2</span>
+                <span>Nội dung số đã tải lên</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Recent Orders Table -->
+        <div class="lg:col-span-3 bg-[#1b1b20] rounded-xl p-8 border border-white/5">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-black text-white font-headline tracking-tight uppercase">Giao dịch gần đây</h3>
+                <a href="orders.html" class="text-[10px] font-bold text-white/40 hover:text-white uppercase border-b border-white/10 pb-1 transition-all">Xem tất cả đơn hàng</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-separate border-spacing-y-4">
+                    <thead class="text-white/20 text-[10px] uppercase tracking-widest font-bold">
+                        <tr>
+                            <th class="pb-2 px-4">Mã ĐH</th>
+                            <th class="pb-2 px-4">Ngày giao dịch</th>
+                            <th class="pb-2 px-4">Tên Khách</th>
+                            <th class="pb-2 px-4">Tổng tiền</th>
+                            <th class="pb-2 px-4">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentOrdersTable" class="text-sm font-body">
+                        <!-- Content will be loaded via JS -->
+                        <tr><td colspan="5" class="text-center py-10 text-white/20">Đang tải dữ liệu...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Đăng Nhập | The Cinematic Collector</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary-container": "#ff535b",
+                "secondary-fixed": "#ffe171",
+                "surface-bright": "#39383e",
+                "on-primary-container": "#5b000e",
+                "on-surface": "#e4e1e9",
+                "primary": "#ffb3b1",
+                "on-surface-variant": "#e4bebc",
+                "secondary-fixed-dim": "#e9c400",
+                "surface-container-low": "#1b1b20",
+                "surface-container-highest": "#35343a",
+                "surface-container-high": "#2a292f",
+                "secondary": "#fff0c4",
+                "surface-container": "#1f1f25",
+                "surface-container-lowest": "#0e0e13",
+                "secondary-container": "#fad100",
+                "surface": "#131318",
+                "outline": "#ab8987"
+              },
+              fontFamily: {
+                "headline": ["Epilogue"],
+                "body": ["Be Vietnam Pro"],
+                "label": ["Be Vietnam Pro"]
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #0A0A0F; color: #e4e1e9; overflow-x: hidden; min-height: 100vh; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        h1, h2, h3, .font-headline { font-family: 'Epilogue', sans-serif; }
+        
+        .hero-gradient { background: radial-gradient(circle at center, rgba(255, 83, 91, 0.15) 0%, transparent 80%); }
+        @keyframes embers-rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.6; }
+            100% { transform: translateY(-300px) scale(0.5); opacity: 0; }
+        }
+        .ember { animation: embers-rise linear infinite; z-index: 0; pointer-events: none; }
+        
+        .floating-label-group:focus-within label,
+        .floating-label-group input:not(:placeholder-shown) + label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #ffb3b1;
+        }
+
+        .glass-panel {
+            background: rgba(31, 31, 37, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center selection:bg-primary-container selection:text-white">
+
+<!-- Ambient Background Effects -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="hero-gradient absolute inset-0"></div>
+    <div class="absolute inset-0 opacity-[0.05]" style="background-image: repeating-linear-gradient(45deg, white, white 1px, transparent 1px, transparent 40px);"></div>
+    <div class="ember absolute w-1 h-1 bg-[#ffb3b1] rounded-full" style="bottom: 10%; left: 20%; animation-duration: 4s; animation-delay: 0.5s;"></div>
+    <div class="ember absolute w-1 h-1 bg-red-400 rounded-full" style="bottom: 5%; left: 40%; animation-duration: 5s; animation-delay: 1.2s;"></div>
+    <div class="ember absolute w-1 h-1 bg-orange-400 rounded-full" style="bottom: 15%; left: 60%; animation-duration: 3s; animation-delay: 0.2s;"></div>
+    <div class="ember absolute w-1 h-1 bg-[#ffb3b1] rounded-full" style="bottom: 8%; left: 80%; animation-duration: 6s; animation-delay: 2s;"></div>
+    <div class="ember absolute w-1.5 h-1.5 bg-red-500 rounded-full" style="bottom: 12%; left: 35%; animation-duration: 4.5s; animation-delay: 1.8s;"></div>
+</div>
+
+<main class="relative z-10 w-full max-w-md p-8">
+    <div class="text-center mb-10">
+        <h1 class="text-3xl font-black tracking-tighter text-red-500 italic font-headline uppercase mb-2">MangaShop</h1>
+        <p class="text-on-surface-variant text-sm tracking-widest uppercase">The Cinematic Collector</p>
+    </div>
+
+    <div class="glass-panel p-8 rounded-2xl shadow-2xl">
+        <h2 class="text-2xl font-black font-headline uppercase tracking-tight mb-8">Đăng Nhập</h2>
+        <form id="loginForm" class="space-y-8">
+            <div id="errorMessage" class="hidden bg-red-500/20 text-red-400 px-4 py-3 rounded text-sm font-bold border border-red-500/50"></div>
+            
+            <div class="relative floating-label-group">
+                <input id="username" type="text" placeholder=" " required class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline/30 focus:border-primary focus:ring-0 transition-all pt-6 pb-2 text-on-surface font-medium">
+                <label for="username" class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-xs tracking-widest font-bold">Tên đăng nhập</label>
+            </div>
+
+            <div class="relative floating-label-group">
+                <input id="password" type="password" placeholder=" " required class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline/30 focus:border-primary focus:ring-0 transition-all pt-6 pb-2 text-on-surface font-medium">
+                <label for="password" class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-xs tracking-widest font-bold">Mật khẩu</label>
+            </div>
+
+            <button type="submit" class="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-black uppercase tracking-widest rounded shadow-[0_0_20px_rgba(255,83,91,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all">
+                Đăng Nhập
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <p class="text-sm text-on-surface-variant">Chưa có tài khoản? <a href="register.html" class="text-primary font-bold hover:underline underline-offset-4 transition-all">Đăng ký ngay</a></p>
+        </div>
+    </div>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

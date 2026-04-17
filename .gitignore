@@ -361,4 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/ASPNET/wwwroot
+# Ignore dynamic user uploads but keep static assets
+ASPNET/wwwroot/uploads/*
+!ASPNET/wwwroot/uploads/.gitkeep
