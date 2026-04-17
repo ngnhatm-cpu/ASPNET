@@ -111,19 +111,29 @@ public class MangasController : ControllerBase
         if (id != manga.Id)
             return BadRequest(new { message = "Id không khớp" });
 
-        if (!_context.Categories.Any(c => c.Id == manga.CategoryId))
-            return BadRequest(new { message = "Thể loại không tồn tại" });
+        var existingManga = await _context.Mangas.FindAsync(id);
+        if (existingManga == null)
+            return NotFound(new { message = "Không tìm thấy truyện" });
 
-        _context.Entry(manga).State = EntityState.Modified;
+        // Cập nhật các trường dữ liệu
+        existingManga.Title = manga.Title;
+        existingManga.Author = manga.Author;
+        existingManga.Description = manga.Description;
+        existingManga.CategoryId = manga.CategoryId;
+        existingManga.CoverImageUrl = manga.CoverImageUrl;
+        existingManga.Price = manga.Price;
 
-        try { await _context.SaveChangesAsync(); }
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
         catch (DbUpdateConcurrencyException)
         {
             if (!_context.Mangas.Any(e => e.Id == id)) return NotFound();
             throw;
         }
 
-        return NoContent();
+        return Ok(new { message = "Cập nhật thành công" });
     }
 
     // DELETE: api/mangas/5 (Admin Only)

@@ -13,20 +13,29 @@ var builder = WebApplication.CreateBuilder(args);
 // ĐĂNG KÝ DỊCH VỤ (Services Registration)
 // =============================================
 
-// Kết nối PostgreSQL (Hỗ trợ cả định dạng URI của Render và Key-Value chuẩn)
+// =============================================
+// CẤU HÌNH DATABASE (Linh hoạt Local/Render)
+// =============================================
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-    if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
+    if (builder.Environment.IsDevelopment())
     {
-        // Chuyển đổi định dạng postgresql:// sang Key-Value chuẩn
-        var uri = new Uri(connectionString);
-        var userInfo = uri.UserInfo.Split(':');
-        connectionString = $"Host={uri.Host};Database={uri.AbsolutePath.Substring(1)};Username={userInfo[0]};Password={userInfo[1]};Port={uri.Port};SSL Mode=Require;Trust Server Certificate=true";
+        // Chạy ở Local (máy tính cá nhân) -> Dùng SQL Server
+        options.UseSqlServer(connectionString);
     }
-
-    options.UseNpgsql(connectionString);
+    else
+    {
+        // Chạy trên Render -> Dùng PostgreSQL
+        if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
+        {
+            var uri = new Uri(connectionString);
+            var userInfo = uri.UserInfo.Split(':');
+            connectionString = $"Host={uri.Host};Database={uri.AbsolutePath.Substring(1)};Username={userInfo[0]};Password={userInfo[1]};Port={uri.Port};SSL Mode=Require;Trust Server Certificate=true";
+        }
+        options.UseNpgsql(connectionString);
+    }
 });
 
 // Đăng ký Watermark Service
