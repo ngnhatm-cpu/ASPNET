@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả thanh toán - MangaStore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Roboto:wght@400;700&display=swap');
+        body { font-family: 'Outfit', sans-serif; background-color: #0f1014; color: #e2e2e6; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md bg-[#1d1e24] border border-white/10 rounded-3xl p-8 text-center shadow-2xl">
+        <div id="iconContainer" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
+            <span id="statusIcon" class="material-symbols-outlined text-4xl"></span>
+        </div>
+        
+        <h1 id="statusTitle" class="text-3xl font-black mb-2 uppercase tracking-tighter"></h1>
+        <p id="statusMessage" class="text-white/60 mb-8 px-4"></p>
+
+        <div id="successDetails" class="hidden bg-white/5 rounded-2xl p-4 mb-8 border border-white/5">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white/40 text-sm">Số Xu nhận được</span>
+                <span id="xuAmount" class="font-bold text-primary text-xl"></span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-white/40 text-sm">Nội dung</span>
+                <span class="text-white font-bold">Nạp Xu hệ thống</span>
+            </div>
+        </div>
+
+        <button onclick="window.location.href='index.html'" class="w-full bg-primary hover:bg-white text-black font-black py-4 rounded-xl uppercase tracking-widest transition-all mb-4">
+            Quay lại Trang chủ
+        </button>
+        <p class="text-[10px] text-white/20 uppercase tracking-[0.2em]">Trang này sẽ tự động chuyển hướng sau <span id="countdown">10</span> giây</p>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const amount = urlParams.get('amount');
+
+        const title = document.getElementById('statusTitle');
+        const message = document.getElementById('statusMessage');
+        const iconContainer = document.getElementById('iconContainer');
+        const statusIcon = document.getElementById('statusIcon');
+        const successDetails = document.getElementById('successDetails');
+        const xuAmount = document.getElementById('xuAmount');
+
+        if (status === 'success') {
+            title.textContent = 'Thành công!';
+            message.textContent = 'Giao diện của bạn đã được xử lý hoàn tất. Chúc bạn có những phút giây đọc truyện vui vẻ!';
+            iconContainer.classList.add('bg-green-500/20', 'text-green-500');
+            statusIcon.textContent = 'check_circle';
+            successDetails.classList.remove('hidden');
+            xuAmount.textContent = `${amount} Xu`;
+            
+            // Cập nhật lại user trong localStorage nếu cần
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user.balance !== undefined) {
+                user.balance += parseFloat(amount);
+                localStorage.setItem('user', JSON.stringify(user));
+            }
+        } else if (status === 'fail') {
+            title.textContent = 'Thất bại';
+            message.textContent = 'Giao dịch không thành công hoặc đã bị hủy. Vui lòng kiểm tra lại phương thức thanh toán của bạn.';
+            iconContainer.classList.add('bg-red-500/20', 'text-red-500');
+            statusIcon.textContent = 'cancel';
+        } else {
+            title.textContent = 'Lỗi hệ thống';
+            message.textContent = 'Đã có lỗi xảy ra trong quá trình xác thực giao dịch. Vui lòng liên hệ quản trị viên.';
+            iconContainer.classList.add('bg-yellow-500/20', 'text-yellow-500');
+            statusIcon.textContent = 'warning';
+        }
+
+        // Countdown redirect
+        let count = 10;
+        const countdownEl = document.getElementById('countdown');
+        const timer = setInterval(() => {
+            count--;
+            countdownEl.textContent = count;
+            if (count <= 0) {
+                clearInterval(timer);
+                window.location.href = 'index.html';
+            }
+        }, 1000);
+    </script>
+    <style>
+        .text-primary { color: #facc15; }
+        .bg-primary { background-color: #facc15; }
+    </style>
+</body>
+</html>

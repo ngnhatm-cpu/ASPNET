@@ -84,10 +84,24 @@ public class MangasController : ControllerBase
             .Include(m => m.Category)
             .Include(m => m.Chapters)
             .Where(m => m.Title.Contains(keyword) || (m.Author != null && m.Author.Contains(keyword)))
-            .Select(m => MapToDto(m, null))
             .ToListAsync();
 
-        return Ok(mangas);
+        return Ok(mangas.Select(m => MapToDto(m, null)));
+    }
+
+    // GET: api/mangas/ranking
+    [HttpGet("ranking")]
+    public async Task<ActionResult<IEnumerable<MangaDto>>> GetRanking()
+    {
+        // Lấy top 10 truyện được mua nhiều nhất dựa trên OrderItems
+        var topMangas = await _context.Mangas
+            .Include(m => m.Category)
+            .Include(m => m.Chapters)
+            .OrderByDescending(m => _context.OrderItems.Count(oi => oi.Chapter!.MangaId == m.Id))
+            .Take(10)
+            .ToListAsync();
+
+        return Ok(topMangas.Select(m => MapToDto(m, null)));
     }
 
     // POST: api/mangas (Admin Only)

@@ -41,6 +41,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Đăng ký Watermark Service
 builder.Services.AddScoped<IWatermarkService, WatermarkService>();
 
+// Đăng ký VNPay Service
+builder.Services.AddScoped<VNPayService>();
+
 // Cấu hình JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);

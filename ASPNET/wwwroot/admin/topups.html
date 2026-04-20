@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Quản lý Nạp tiền | MangaShop Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #0e0e13; color: #ffffff; }
+        h1, h2, h3, .font-headline { font-family: 'Epilogue', sans-serif; }
+    </style>
+</head>
+<body class="text-white">
+
+<!-- Fixed SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-[#0e0e13] border-r border-white/5 flex flex-col py-8 z-50">
+    <div class="px-8 mb-12">
+        <h1 class="text-2xl font-black italic tracking-tighter text-[#ff535b] font-headline">MangaShop</h1>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="categories.html">
+            <span class="material-symbols-outlined">category</span>
+            <span>Categories</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="mangas.html">
+            <span class="material-symbols-outlined">library_books</span>
+            <span>Manga & Chapters</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="orders.html">
+            <span class="material-symbols-outlined">shopping_cart</span>
+            <span>Orders</span>
+        </a>
+        <a class="flex items-center gap-4 text-[#ff535b] border-r-4 border-[#ff535b] bg-white/5 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase transition-all translate-x-1 duration-300" href="topups.html">
+            <span class="material-symbols-outlined">payments</span>
+            <span>Top-ups</span>
+        </a>
+        <a class="flex items-center gap-4 text-white/40 px-6 py-4 font-headline font-bold text-sm tracking-widest uppercase hover:bg-white/5 hover:text-white transition-all" href="users.html">
+            <span class="material-symbols-outlined">group</span>
+            <span>Users & Wallet</span>
+        </a>
+    </nav>
+</aside>
+
+<header class="fixed top-0 right-0 left-64 h-16 bg-[#131318]/60 backdrop-blur-xl border-b border-white/5 flex justify-between items-center px-8 z-40">
+    <h2 class="text-xs font-black uppercase tracking-widest text-white/40">Giao dịch nạp Xu</h2>
+    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff535b] to-[#92001c] flex items-center justify-center font-black text-white text-xs shadow-lg shadow-[#ff535b]/20">A</div>
+</header>
+
+<main class="ml-64 mt-16 p-8 min-h-screen">
+    <div class="bg-[#1b1b20] rounded-xl p-8 border border-white/5">
+        <div class="flex justify-between items-center mb-12">
+             <h3 class="text-2xl font-black text-white font-headline tracking-tighter uppercase">Lịch sử nạp từ VNPay</h3>
+             <div class="text-right">
+                 <p id="totalRev" class="text-2xl font-black text-primary">0 VNĐ</p>
+                 <p class="text-[10px] text-white/40 font-bold uppercase tracking-widest">Tổng doanh thu thực tế</p>
+             </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-separate border-spacing-y-4">
+                <thead class="text-white/20 text-[10px] uppercase tracking-widest font-bold">
+                    <tr>
+                        <th class="pb-2 px-4">Mã giao dịch</th>
+                        <th class="pb-2 px-4">Thời gian</th>
+                        <th class="pb-2 px-4">Khách hàng</th>
+                        <th class="pb-2 px-4">Số tiền</th>
+                        <th class="pb-2 px-4">VNPay Trans ID</th>
+                        <th class="pb-2 px-4">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody id="topupList" class="text-sm font-body">
+                    <tr><td colspan="6" class="text-center py-10 text-white/20">Đang tải dữ liệu...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script src="../js/api.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", loadAllTopups);
+
+    async function loadAllTopups() {
+        const list = document.getElementById("topupList");
+        try {
+            const topups = await apiFetch("/Payments/admin/all-topups");
+            
+            // Calculate total success revenue
+            let total = 0;
+            topups.forEach(t => { if(t.status === 'Success') total += t.amount; });
+            document.getElementById("totalRev").innerText = total.toLocaleString() + " VNĐ";
+
+            if (topups.length === 0) {
+                list.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-white/20 font-medium">Chưa có giao dịch nào.</td></tr>';
+                return;
+            }
+
+            list.innerHTML = topups.map(t => `
+                <tr class="bg-white/5 rounded-xl transition-all hover:bg-white/10 group">
+                    <td class="py-5 px-6 rounded-l-xl font-black text-white/50 text-xs">#${t.id}</td>
+                    <td class="py-5 px-6 font-medium text-white/60">${new Date(t.createdAt).toLocaleString()}</td>
+                    <td class="py-5 px-6">
+                        <div class="font-bold text-white uppercase tracking-tight">${t.username}</div>
+                    </td>
+                    <td class="py-5 px-6 font-black text-primary">
+                        ${t.amount.toLocaleString()}đ -> +${t.xuAmount} Xu
+                    </td>
+                    <td class="py-5 px-6 font-mono text-[10px] text-white/30 tracking-tighter">
+                        ${t.vnPayTranId || '-'}
+                    </td>
+                    <td class="py-5 px-6 rounded-r-xl">
+                        <span class="px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest
+                            ${t.status === 'Success' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 
+                              t.status === 'Pending' ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20' : 
+                              'bg-red-500/10 text-red-500 border border-red-500/20'}">
+                            ${t.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            list.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-red-500 font-bold">Lỗi: ${err.message}</td></tr>`;
+        }
+    }
+</script>
+</body>
+</html>

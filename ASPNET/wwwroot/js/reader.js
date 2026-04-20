@@ -1,93 +1,119 @@
-let currentChapterId = null;
-let currentChapterPrice = 0;
-let currentMangaId = null;
-let globalPrevId = null;
-let globalNextId = null;
-
-let lastScrollY = window.scrollY;
-const toolbar = document.getElementById("readerToolbar");
-
-window.addEventListener("scroll", () => {
-    if (window.scrollY > lastScrollY && window.scrollY > 100) {
-        toolbar.classList.add("toolbar-hidden-top");
-    } else {
-        toolbar.classList.remove("toolbar-hidden-top");
-    }
-    lastScrollY = window.scrollY;
-});
+// reader.js - Isolated scope
+const readerState = {
+    chapterId: null,
+    chapterPrice: 0,
+    mangaId: null,
+    prevId: null,
+    nextId: null,
+    lastScrollY: window.scrollY
+};
 
 document.addEventListener("DOMContentLoaded", () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const chapterId = urlParams.get('id');
+    console.log("Reader: Initializing...");
+    const toolbar = document.getElementById("readerToolbar");
+    if (toolbar) {
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > readerState.lastScrollY && window.scrollY > 100) {
+                toolbar.classList.add("toolbar-hidden-top");
+            } else {
+                toolbar.classList.remove("toolbar-hidden-top");
+            }
+            readerState.lastScrollY = window.scrollY;
+        });
+    }
 
-    if (chapterId) {
-        currentChapterId = chapterId;
-        loadPages(chapterId);
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    if (id) {
+        readerState.chapterId = id;
+        loadPages(id);
+        
+        // Wait a bit for other scripts to load
+        setTimeout(() => {
+            if (typeof initComments === "function") {
+                initComments(id);
+            }
+        }, 500); 
     } else {
         showError("Không tìm thấy thông tin chương.");
     }
 });
 
 function goBack() {
-    window.location.href = `detail.html?id=${currentMangaId || ''}`; // If we have mangaId, or just home
+    window.location.href = `detail.html?id=${readerState.mangaId || ''}`;
 }
 
-async function loadPages(chapterId) {
+async function loadPages(cid) {
+    const loader = document.getElementById("loader");
+    const titleEl = document.getElementById("chapterTitle");
+
     try {
-        const response = await fetch(`/api/content/read/${chapterId}`, {
+        const response = await fetch(`/api/content/read/${cid}`, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem('token')}`
             }
         });
 
-        const data = await response.json();
-        currentMangaId = data.mangaId;
-
-        if (response.status === 403) {
-            // Unpurchased -> Show Paywall
-            currentChapterPrice = data.price;
-            globalPrevId = data.prevChapterId;
-            globalNextId = data.nextChapterId;
-            updateNavButtons();
-            showReaderPaywall(data);
-            return;
-        }
-
         if (response.status === 401) {
+            safeHideLoader();
             alert("Vui lòng đăng nhập để đọc chương này!");
             window.location.href = "login.html";
             return;
         }
 
-        if (!response.ok) throw new Error(data.message || "Lấy dữ liệu truyện thất bại.");
+        const data = await response.json().catch(() => ({}));
+        readerState.mangaId = data.mangaId;
 
-        document.getElementById("chapterTitle").textContent = data.chapterTitle || "Đang đọc";
-        globalPrevId = data.prevChapterId;
-        globalNextId = data.nextChapterId;
+        if (response.status === 403) {
+            readerState.chapterPrice = data.price || 0;
+            readerState.prevId = data.prevChapterId;
+            readerState.nextId = data.nextChapterId;
+            updateNavButtons();
+            showReaderPaywall(data);
+            return;
+        }
+
+        if (!response.ok) throw new Error(data.message || "Lỗi tải nội dung");
+
+        if (titleEl) titleEl.textContent = data.chapterTitle || "Đang đọc";
+        readerState.prevId = data.prevChapterId;
+        readerState.nextId = data.nextChapterId;
+        
         renderPages(data.pages);
         updateNavButtons();
 
     } catch (error) {
+        console.error("Reader Error:", error);
         showError(error.message);
+    } finally {
+        // Safe hide fallback
+        setTimeout(safeHideLoader, 1500);
     }
+}
+
+function safeHideLoader() {
+    const loader = document.getElementById("loader");
+    if (loader) loader.classList.add("hidden");
 }
 
 function updateNavButtons() {
     const btnPrev = document.getElementById("btnPrev");
     const btnNext = document.getElementById("btnNext");
     
-    if (globalPrevId) {
-        btnPrev.disabled = false;
-        btnPrev.classList.replace("text-white/30", "text-white/50");
-    } else {
-        btnPrev.disabled = true;
-        btnPrev.classList.replace("text-white/50", "text-white/30");
+    if (btnPrev) {
+        if (readerState.prevId) {
+            btnPrev.disabled = false;
+            btnPrev.style.opacity = "1";
+        } else {
+            btnPrev.disabled = true;
+            btnPrev.style.opacity = "0.3";
+        }
     }
 
-    if (globalNextId) {
-        btnNext.disabled = false;
-    } else {
-        btnNext.disabled = true;
+    if (btnNext) {
+        btnNext.disabled = !readerState.nextId;
+        btnNext.style.opacity = readerState.nextId ? "1" : "0.3";
     }
 }
 
@@ -97,81 +123,93 @@ function navigateToChapter(id) {
 }
 
 function showReaderPaywall(data) {
+    safeHideLoader();
     const pModal = document.getElementById("paywallModal");
-    const pContent = document.getElementById("paywallContent");
-    
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const balance = user.balance || 0;
+    if (!pModal) return;
 
-    document.getElementById("chapterTitle").textContent = data.chapterTitle || "Chương Khóa";
-    document.getElementById("modalPrice").textContent = `${data.price} Xu`;
-    document.getElementById("modalBalance").textContent = `${balance} Xu`;
+    const userJson = localStorage.getItem("user");
+    let balance = 0;
+    if (userJson && userJson !== "undefined" && userJson !== "null") {
+        try {
+            const user = JSON.parse(userJson);
+            balance = user.balance || 0;
+        } catch(e) {}
+    }
+
+    const titleEl = document.getElementById("chapterTitle");
+    if (titleEl) titleEl.textContent = data.chapterTitle || "Chương Khóa";
     
-    document.getElementById("loader").classList.add("hidden");
+    const mPrice = document.getElementById("modalPrice");
+    const mBalance = document.getElementById("modalBalance");
+    if (mPrice) mPrice.textContent = `${data.price} Xu`;
+    if (mBalance) mBalance.textContent = `${balance} Xu`;
+    
     pModal.classList.remove("hidden");
     pModal.classList.add("flex");
-    setTimeout(() => {
-        pModal.classList.remove("opacity-0");
-        pContent.classList.remove("scale-95");
-    }, 10);
+    setTimeout(() => { pModal.classList.remove("opacity-0"); }, 50);
 }
 
 async function buyChapterInReader() {
+    const btn = document.getElementById("btnConfirmBuy");
+    if (!btn) return;
+
     try {
-        const btn = document.getElementById("btnConfirmBuy");
-        const originalText = btn.textContent;
         btn.textContent = "Đang xử lý...";
         btn.disabled = true;
 
-        const res = await apiFetch("/Orders", {
+        await apiFetch("/Orders", {
             method: "POST",
-            body: JSON.stringify({ chapterIds: [parseInt(currentChapterId)] })
+            body: JSON.stringify({ chapterIds: [parseInt(readerState.chapterId)] })
         });
 
         // Update local balance
-        const user = JSON.parse(localStorage.getItem("user"));
-        user.balance -= currentChapterPrice;
-        localStorage.setItem("user", JSON.stringify(user));
+        const userJson = localStorage.getItem("user");
+        if (userJson) {
+            const user = JSON.parse(userJson);
+            user.balance -= readerState.chapterPrice;
+            localStorage.setItem("user", JSON.stringify(user));
+        }
 
-        // Close paywall and reload
-        const pModal = document.getElementById("paywallModal");
-        pModal.classList.add("hidden");
         window.location.reload();
-
     } catch (err) {
         const errP = document.getElementById("modalError");
-        errP.textContent = err.message || "Lỗi giao dịch.";
-        errP.classList.remove("hidden");
-        document.getElementById("btnConfirmBuy").disabled = false;
-        document.getElementById("btnConfirmBuy").textContent = "Thử lại";
+        if (errP) {
+            errP.textContent = err.message || "Lỗi giao dịch.";
+            errP.classList.remove("hidden");
+        }
+        btn.disabled = false;
+        btn.textContent = "Thử lại";
     }
 }
 
 function renderPages(pages) {
-    const loader = document.getElementById("loader");
+    safeHideLoader();
     const container = document.getElementById("pagesContainer");
-    loader.classList.add("hidden");
+    if (!container) return;
 
     if (!pages || pages.length === 0) {
         showError("Chương này đang được tác giả cập nhật hình ảnh.");
         return;
     }
 
+    container.innerHTML = "";
     pages.forEach((url, i) => {
         const img = document.createElement("img");
         img.className = "page-img";
         img.src = url;
         img.alt = `Trang ${i + 1}`;
-        img.loading = "lazy"; // Tối ưu load
-        
+        img.loading = "lazy";
         container.appendChild(img);
     });
 }
 
 function showError(msg) {
-    document.getElementById("loader").classList.add("hidden");
+    safeHideLoader();
     const errContainer = document.getElementById("errorContainer");
-    errContainer.classList.remove("hidden");
-    document.getElementById("errorMsg").textContent = msg;
-    document.getElementById("bottomNav").classList.add("hidden");
+    const errMsg = document.getElementById("errorMsg");
+    if (errContainer) errContainer.classList.remove("hidden");
+    if (errMsg) errMsg.textContent = msg;
+
+    const bNav = document.getElementById("bottomNav");
+    if (bNav) bNav.style.opacity = "0.5";
 }

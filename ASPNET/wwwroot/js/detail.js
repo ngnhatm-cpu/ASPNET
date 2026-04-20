@@ -8,17 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (mangaId) {
         loadMangaDetail(mangaId);
+        // Khởi kiến hệ thống đánh giá
+        if (typeof initRating === "function") initRating(mangaId);
     } else {
         document.getElementById("mangaHeroContent").innerHTML = `<div class="w-full text-center py-20 text-red-500 font-bold">Không tìm thấy Truyện!</div>`;
     }
 
-    // Attach Topup Modal trigger to App.js's user balance if possible, handled in app.js or here
-    document.addEventListener("click", (e) => {
-        if (e.target.closest("#btnTopupWallet")) {
-            document.getElementById("topupModal").classList.remove("hidden");
-            document.getElementById("topupModal").classList.add("flex");
-        }
-    });
+    // Open Topup Modal handled globally in app.js listener
 
     document.getElementById("btnConfirmBuy")?.addEventListener("click", buyChapter);
 });
@@ -164,8 +160,7 @@ function showPaywall(chap) {
         btnBuy.textContent = "Nạp Thêm Xu";
         btnBuy.onclick = () => {
             closePaywall();
-            document.getElementById("topupModal").classList.remove("hidden");
-            document.getElementById("topupModal").classList.add("flex");
+            openTopupModal();
         };
     } else {
         document.getElementById("modalBalance").classList.replace("text-red-500", "text-secondary-fixed");

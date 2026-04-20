@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Lịch sử giao dịch | MangaShop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#ffb3b1",
+                "on-primary-container": "#5b000e",
+                "secondary-fixed": "#ffb3b1",
+                "surface": "#000000",
+              },
+              fontFamily: {
+                "headline": ["Epilogue"],
+                "body": ["Be Vietnam Pro"]
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #000000; color: #ffffff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .hero-gradient { background: radial-gradient(circle at top right, rgba(255, 179, 177, 0.1) 0%, transparent 60%); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    </style>
+</head>
+<body class="bg-surface text-white">
+
+<!-- Navbar Placeholder -->
+<div id="navbar"></div>
+
+<main class="max-w-screen-xl mx-auto px-4 py-32 relative min-h-screen">
+    <div class="hero-gradient absolute inset-0 -z-10"></div>
+    
+    <header class="mb-16">
+        <h1 class="text-4xl md:text-6xl font-black font-headline uppercase tracking-tighter text-white mb-4">Lịch sử giao dịch</h1>
+        <p class="text-white/40 font-medium tracking-wide">Theo dõi các khoản nạp và chi tiêu Xu của bạn.</p>
+    </header>
+
+    <!-- Tabs Container -->
+    <div class="flex flex-col gap-8">
+        <!-- Tab Headers -->
+        <div class="flex gap-4 p-1 bg-white/5 rounded-2xl w-max border border-white/5">
+            <button onclick="switchTab('topups', this)" class="tab-btn px-8 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all bg-primary text-on-primary-container shadow-lg shadow-primary/20">Lịch sử nạp</button>
+            <button onclick="switchTab('purchases', this)" class="tab-btn px-8 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all text-white/40 hover:text-white">Lịch sử mua truyện</button>
+        </div>
+
+        <!-- Table Content -->
+        <div class="glass rounded-3xl overflow-hidden p-4 md:p-8">
+            <!-- Topups Tab Content -->
+            <div id="topupsTab" class="tab-content transition-all duration-300">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-separate border-spacing-y-4">
+                        <thead class="text-white/20 text-[10px] uppercase tracking-widest font-black">
+                            <tr>
+                                <th class="pb-2 px-4">Thời gian</th>
+                                <th class="pb-2 px-4">Số tiền (VND)</th>
+                                <th class="pb-2 px-4">Xu nhận được</th>
+                                <th class="pb-2 px-4">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topupList" class="text-sm">
+                            <tr><td colspan="4" class="text-center py-12 text-white/20 font-medium">Đang tải dữ liệu...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Purchases Tab Content -->
+            <div id="purchasesTab" class="tab-content hidden transition-all duration-300">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-separate border-spacing-y-4">
+                        <thead class="text-white/20 text-[10px] uppercase tracking-widest font-black">
+                            <tr>
+                                <th class="pb-2 px-4">Thời gian</th>
+                                <th class="pb-2 px-4">Tên chương / Truyện</th>
+                                <th class="pb-2 px-4">Số Xu tiêu</th>
+                                <th class="pb-2 px-4">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchaseList" class="text-sm">
+                            <tr><td colspan="4" class="text-center py-12 text-white/20 font-medium">Đang tải dữ liệu...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (!localStorage.getItem("token")) {
+            window.location.href = "login.html";
+            return;
+        }
+        loadTopups();
+        loadPurchases();
+    });
+
+    async function switchTab(tab, btn) {
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.add("hidden"));
+        document.getElementById(tab + "Tab").classList.remove("hidden");
+        
+        document.querySelectorAll(".tab-btn").forEach(b => {
+            b.classList.remove("bg-primary", "text-on-primary-container", "shadow-lg", "shadow-primary/20");
+            b.classList.add("text-white/40");
+        });
+        
+        btn.classList.add("bg-primary", "text-on-primary-container", "shadow-lg", "shadow-primary/20");
+        btn.classList.remove("text-white/40");
+    }
+
+    async function loadTopups() {
+        const list = document.getElementById("topupList");
+        try {
+            const topups = await apiFetch("/Payments/my-topups");
+            
+            if (topups.length === 0) {
+                list.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-white/20 font-medium">Bạn chưa có giao dịch nạp tiền nào.</td></tr>';
+                return;
+            }
+
+            list.innerHTML = topups.map(t => `
+                <tr class="bg-white/5 rounded-xl transition-all hover:bg-white/10 group">
+                    <td class="py-5 px-6 rounded-l-xl font-medium text-white/60">
+                        ${new Date(t.createdAt).toLocaleString()}
+                    </td>
+                    <td class="py-5 px-6 font-black text-white">
+                        ${t.amount.toLocaleString()} VNĐ
+                    </td>
+                    <td class="py-5 px-6 font-black text-primary">
+                        +${t.xuAmount} Xu
+                    </td>
+                    <td class="py-5 px-6 rounded-r-xl">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
+                            ${t.status === 'Success' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 
+                              t.status === 'Pending' ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20' : 
+                              'bg-red-500/10 text-red-500 border border-red-500/20'}">
+                            ${t.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            list.innerHTML = `<tr><td colspan="4" class="text-center py-12 text-red-400 font-bold">Lỗi: ${err.message}</td></tr>`;
+        }
+    }
+
+    async function loadPurchases() {
+        const list = document.getElementById("purchaseList");
+        try {
+            const orders = await apiFetch("/Orders");
+            
+            if (orders.length === 0) {
+                list.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-white/20 font-medium">Bạn chưa mua chương truyện nào.</td></tr>';
+                return;
+            }
+
+            // Orders contain Items list
+            let html = "";
+            orders.forEach(o => {
+                o.items.forEach(item => {
+                    html += `
+                        <tr class="bg-white/5 rounded-xl transition-all hover:bg-white/10 group">
+                            <td class="py-5 px-6 rounded-l-xl font-medium text-white/60">
+                                ${new Date(o.orderDate).toLocaleString()}
+                            </td>
+                            <td class="py-5 px-6">
+                                <div class="font-black text-white uppercase tracking-tight line-clamp-1">${item.mangaTitle}</div>
+                                <div class="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">${item.chapterTitle}</div>
+                            </td>
+                            <td class="py-5 px-6 font-black text-red-400">
+                                -${item.unitPrice} Xu
+                            </td>
+                            <td class="py-5 px-6 rounded-r-xl">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-white/5 text-white/40 border border-white/10">
+                                    ${o.status}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+            list.innerHTML = html;
+        } catch (err) {
+            list.innerHTML = `<tr><td colspan="4" class="text-center py-12 text-red-400 font-bold">Lỗi: ${err.message}</td></tr>`;
+        }
+    }
+</script>
+</body>
+</html>

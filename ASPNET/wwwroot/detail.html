@@ -48,11 +48,27 @@
 
 <!-- Nav Bar -->
 <nav class="sticky top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
-    <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
-        <a href="index.html" class="text-2xl font-black tracking-tighter text-red-500 font-headline uppercase italic">
+    <div class="flex justify-between items-center w-full px-8 py-3 max-w-screen-2xl mx-auto gap-8">
+        <!-- Logo -->
+        <a href="index.html" class="text-2xl font-black tracking-tighter text-red-500 font-headline uppercase italic shrink-0">
             MangaShop
         </a>
-        <div class="flex items-center gap-6" id="navAuthArea">
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-md relative hidden lg:block">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm truyện..." class="w-full bg-white/5 border border-white/10 rounded-full px-5 py-2 text-sm focus:outline-none focus:border-primary transition-all">
+            <span class="material-symbols-outlined absolute right-4 top-2 text-white/20">search</span>
+        </div>
+
+        <!-- Nav Links -->
+        <div class="hidden xl:flex items-center gap-8 font-headline uppercase font-bold text-[10px] tracking-[0.2em]">
+            <a class="text-white/40 hover:text-white transition-colors uppercase tracking-widest" href="index.html">Trang Chủ</a>
+            <a class="text-white/40 hover:text-white transition-colors uppercase tracking-widest" href="ranking.html">Xếp hạng</a>
+            <a class="text-white/40 hover:text-white transition-colors uppercase tracking-widest" href="index.html#genres">Thể loại</a>
+        </div>
+
+        <!-- Auth Area -->
+        <div class="flex items-center gap-6 shrink-0" id="navAuthArea">
             <!-- Render via app.js -->
         </div>
     </div>
@@ -79,6 +95,31 @@
             <div>
                 <h3 class="text-lg font-black font-headline uppercase tracking-widest text-primary mb-4 border-b border-white/10 pb-4">Tóm tắt nội dung</h3>
                 <p id="mangaDescription" class="text-sm text-white/70 leading-loose font-medium text-justify">Đang cập nhật...</p>
+
+                <!-- Rating Section -->
+                <div class="mt-12 pt-8 border-t border-white/5">
+                    <h4 class="text-[10px] font-black font-headline uppercase tracking-[0.3em] text-white/40 mb-4">Đánh giá của độc giả</h4>
+                    <div class="flex items-center gap-4">
+                        <div id="starsDisplay" class="flex gap-1 text-primary">
+                            <!-- Stars injection -->
+                        </div>
+                        <div class="text-right">
+                             <p id="avgRating" class="text-2xl font-black text-white leading-none">0.0</p>
+                             <p id="ratingCount" class="text-[8px] font-bold text-white/20 uppercase tracking-widest">0 đánh giá</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex flex-col gap-3">
+                        <p class="text-[8px] font-bold text-white/40 uppercase tracking-widest">Chấm điểm truyện này:</p>
+                        <div id="rateContainer" class="flex gap-2">
+                             <button onclick="submitRating(1)" class="w-8 h-8 rounded bg-white/5 hover:bg-primary transition-all flex items-center justify-center group"><span class="material-symbols-outlined text-sm group-hover:text-black">star</span></button>
+                             <button onclick="submitRating(2)" class="w-8 h-8 rounded bg-white/5 hover:bg-primary transition-all flex items-center justify-center group"><span class="material-symbols-outlined text-sm group-hover:text-black">star</span></button>
+                             <button onclick="submitRating(3)" class="w-8 h-8 rounded bg-white/5 hover:bg-primary transition-all flex items-center justify-center group"><span class="material-symbols-outlined text-sm group-hover:text-black">star</span></button>
+                             <button onclick="submitRating(4)" class="w-8 h-8 rounded bg-white/5 hover:bg-primary transition-all flex items-center justify-center group"><span class="material-symbols-outlined text-sm group-hover:text-black">star</span></button>
+                             <button onclick="submitRating(5)" class="w-8 h-8 rounded bg-white/5 hover:bg-primary transition-all flex items-center justify-center group"><span class="material-symbols-outlined text-sm group-hover:text-black">star</span></button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -123,18 +164,51 @@
     </div>
 </div>
 
-<!-- Nạp Xu Modal -->
-<div id="topupModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden items-center justify-center p-6">
-    <div class="glass p-10 rounded-2xl max-w-sm w-full text-center border border-white/10 bg-[#131318]/90">
-        <span class="material-symbols-outlined text-5xl text-secondary-fixed mb-4">account_balance_wallet</span>
-        <h2 class="text-xl font-black font-headline uppercase tracking-tighter text-white mb-2">Nạp Xu</h2>
-        <p class="text-xs text-white/50 mb-6">Tính năng thanh toán VNPay đang được bảo trì. Vui lòng liên hệ Admin để được nạp Xu thủ công.</p>
-        <button onclick="document.getElementById('topupModal').classList.add('hidden'); document.getElementById('topupModal').classList.remove('flex')" class="w-full py-4 bg-white/10 hover:bg-white/20 text-white font-bold uppercase tracking-widest rounded transition-colors text-xs">Đóng</button>
+<!-- Modal Nạp Xu -->
+<div id="topupModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+    <div class="bg-[#1d1e24] w-full max-w-md rounded-3xl p-8 border border-white/10 shadow-2xl scale-95 transition-transform duration-300" id="topupContent">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-black font-headline uppercase tracking-tighter text-white">Nạp Xu Hệ Thống</h3>
+            <button onclick="closeTopupModal()" class="text-white/40 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        
+        <p class="text-sm text-white/60 mb-6 font-medium">Chọn gói nạp bạn muốn. Tỷ giá: <span class="text-secondary-fixed font-bold">10,000 VNĐ = 10 Xu</span>.</p>
+        
+        <div class="space-y-3 mb-8">
+            <button onclick="selectPackage(20000, 20)" class="package-btn w-full flex justify-between items-center p-4 rounded-xl border border-white/5 bg-white/5 hover:border-primary/50 transition-all group">
+                <div class="text-left">
+                    <p class="text-white font-bold tracking-wide">Gói Khởi Đầu</p>
+                    <p class="text-[10px] text-white/40 uppercase tracking-widest mt-1">20,000 VNĐ</p>
+                </div>
+                <div class="text-right"><span class="text-primary font-black text-xl">20 Xu</span></div>
+            </button>
+            <button onclick="selectPackage(50000, 50)" class="package-btn w-full flex justify-between items-center p-4 rounded-xl border border-white/5 bg-white/5 hover:border-primary/50 transition-all group">
+                <div class="text-left">
+                    <p class="text-white font-bold tracking-wide">Gói Phổ Thông</p>
+                    <p class="text-[10px] text-white/40 uppercase tracking-widest mt-1">50,000 VNĐ</p>
+                </div>
+                <div class="text-right"><span class="text-primary font-black text-xl">50 Xu</span></div>
+            </button>
+            <button onclick="selectPackage(100000, 100)" class="package-btn w-full flex justify-between items-center p-4 rounded-xl border border-white/5 bg-white/5 hover:border-primary/50 transition-all group">
+                <div class="text-left">
+                    <p class="text-white font-bold tracking-wide">Gói Cao Cấp</p>
+                    <p class="text-[10px] text-white/40 uppercase tracking-widest mt-1">100,000 VNĐ</p>
+                </div>
+                <div class="text-right"><span class="text-primary font-black text-xl">100 Xu</span></div>
+            </button>
+        </div>
+
+        <div id="topupLoading" class="hidden flex-col items-center justify-center py-4">
+            <div class="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
+            <p class="text-[10px] text-white/40 uppercase tracking-widest font-bold">Đang kết nối VNPay...</p>
+        </div>
+        <p class="text-[9px] text-white/20 uppercase tracking-widest text-center">Thanh toán an toàn qua cổng VNPay Sandbox</p>
     </div>
 </div>
 
 <script src="js/api.js"></script>
 <script src="js/app.js"></script>
+<script src="js/interactions.js"></script>
 <script src="js/detail.js?v=2.0"></script>
 </body>
 </html>

@@ -17,6 +17,9 @@ public class AppDbContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<UserLibrary> UserLibraries { get; set; }
+    public DbSet<TopupTransaction> TopupTransactions { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,6 +70,41 @@ public class AppDbContext : DbContext
             .HasOne(ul => ul.Chapter)
             .WithMany(c => c.UserLibraries)
             .HasForeignKey(ul => ul.ChapterId);
+
+        // User → TopupTransactions (1 - nhiều)
+        modelBuilder.Entity<TopupTransaction>()
+            .HasOne(t => t.User)
+            .WithMany()
+            .HasForeignKey(t => t.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // User → Comments (1 - nhiều)
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.User)
+            .WithMany()
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Chapter → Comments (1 - nhiều)
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.Chapter)
+            .WithMany()
+            .HasForeignKey(c => c.ChapterId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // User → Ratings (1 - nhiều)
+        modelBuilder.Entity<Rating>()
+            .HasOne(r => r.User)
+            .WithMany()
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Manga → Ratings (1 - nhiều)
+        modelBuilder.Entity<Rating>()
+            .HasOne(r => r.Manga)
+            .WithMany()
+            .HasForeignKey(r => r.MangaId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Unique: Username, Email
         modelBuilder.Entity<User>()

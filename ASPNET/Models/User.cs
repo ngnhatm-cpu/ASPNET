@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASPNET.Models;
 
@@ -22,6 +23,7 @@ public class User
     [MaxLength(20)]
     public string Role { get; set; } = "Customer"; // Admin, Customer
 
+    [Column(TypeName = "decimal(18,2)")]
     public decimal Balance { get; set; } = 0; // Số dư Xu
 
     [MaxLength(20)]
@@ -37,4 +39,7 @@ public class User
 
     // Navigation property: Thư viện sở hữu
     public ICollection<UserLibrary> Library { get; set; } = new List<UserLibrary>();
+
+    [Timestamp]
+    public byte[]? RowVersion { get; set; }
 }

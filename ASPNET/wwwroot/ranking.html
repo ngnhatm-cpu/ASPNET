@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Xếp Hạng | MangaShop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary-container": "#ff535b",
+                "secondary-fixed": "#ffe171",
+                "on-primary-container": "#5b000e",
+                "on-surface": "#e4e1e9",
+                "primary": "#ffb3b1",
+                "surface-container-low": "#1b1b20",
+                "surface-container-highest": "#35343a",
+                "surface-container-high": "#2a292f",
+                "surface-container": "#1f1f25",
+                "surface-container-lowest": "#0e0e13",
+                "surface": "#131318",
+              },
+              fontFamily: {
+                "headline": ["Epilogue"],
+                "body": ["Be Vietnam Pro"]
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #0A0A0F; color: #e4e1e9; overflow-x: hidden; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        h1, h2, h3, .font-headline { font-family: 'Epilogue', sans-serif; }
+        .rank-gold { color: #facc15; text-shadow: 0 0 20px rgba(250, 204, 21, 0.4); }
+        .rank-silver { color: #94a3b8; text-shadow: 0 0 20px rgba(148, 163, 184, 0.4); }
+        .rank-bronze { color: #b45309; text-shadow: 0 0 20px rgba(180, 83, 9, 0.4); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+
+<!-- Nav Bar -->
+<nav class="sticky top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
+    <div class="flex justify-between items-center w-full px-8 py-3 max-w-screen-2xl mx-auto gap-8">
+        <a href="index.html" class="text-2xl font-black tracking-tighter text-primary font-headline uppercase italic shrink-0">
+            MangaShop
+        </a>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-md relative hidden lg:block">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm truyện..." class="w-full bg-white/5 border border-white/10 rounded-full px-5 py-2 text-sm focus:outline-none focus:border-primary transition-all">
+            <span class="material-symbols-outlined absolute right-4 top-2 text-white/20">search</span>
+        </div>
+
+        <div class="hidden xl:flex items-center gap-8 font-headline uppercase font-bold text-[10px] tracking-[0.2em]">
+            <a class="text-white/40 hover:text-white transition-colors uppercase tracking-widest" href="index.html">Trang Chủ</a>
+            <a class="text-primary uppercase tracking-widest" href="ranking.html">Xếp hạng</a>
+            <a class="text-white/40 hover:text-white transition-colors uppercase tracking-widest" href="index.html#genres">Thể loại</a>
+        </div>
+
+        <div class="flex items-center gap-6 shrink-0" id="navAuthArea">
+            <!-- Render via app.js -->
+        </div>
+    </div>
+</nav>
+
+<main class="w-full max-w-screen-xl mx-auto px-8 py-16">
+    <div class="mb-12">
+        <h1 class="text-5xl font-black font-headline uppercase tracking-tighter text-white mb-2">Bảng Xếp Hạng</h1>
+        <p class="text-xs font-bold uppercase tracking-[0.4em] text-primary-container">Top 10 truyện được yêu thích nhất</p>
+    </div>
+
+    <!-- Ranking List -->
+    <div id="rankingList" class="space-y-6">
+        <!-- Loading -->
+        <div class="flex flex-col items-center justify-center py-20 text-white/20">
+            <span class="material-symbols-outlined animate-spin text-5xl mb-4">refresh</span>
+            <p class="font-bold uppercase tracking-widest text-xs">Đang tải bảng xếp hạng...</p>
+        </div>
+    </div>
+</main>
+
+<!-- Modal Nạp Xu (Copy logic from index) -->
+<div id="topupModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+    <div class="bg-[#1d1e24] w-full max-w-md rounded-3xl p-8 border border-white/10 shadow-2xl scale-95 transition-transform duration-300" id="topupContent">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-black font-headline uppercase tracking-tighter text-white">Nạp Xu Hệ Thống</h3>
+            <button onclick="closeTopupModal()" class="text-white/40 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <p class="text-sm text-white/60 mb-6 font-medium">Tỷ giá: <span class="text-secondary-fixed font-bold">10,000 VNĐ = 10 Xu</span>.</p>
+        <div class="space-y-3 mb-8" id="packageList">
+            <!-- Gói nạp giống index.html -->
+        </div>
+        <div id="topupLoading" class="hidden flex-col items-center justify-center py-4">
+            <div class="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
+        </div>
+    </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script src="js/ranking.js"></script>
+</body>
+</html>
