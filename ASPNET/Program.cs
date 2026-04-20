@@ -144,11 +144,20 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Tự động Migrate database khi khởi động (Dành cho PostgreSQL trên Render)
+// Tự động Migrate database khi khởi động
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    try 
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+        Console.WriteLine("---- Database Migration Successful ----");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("---- Database Migration Failed! ----");
+        Console.WriteLine(ex.Message);
+    }
 }
 
 app.MapControllers();
