@@ -22,9 +22,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
     if (!builder.Environment.IsDevelopment())
     {
+        Console.WriteLine("---- MÔI TRƯỜNG PRODUCTION (RENDER) ----");
         // Chạy trên Render -> Tự động xử lý nếu là định dạng postgresql://
         if (!string.IsNullOrEmpty(connectionString) && (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://")))
         {
+            Console.WriteLine("---- PHÁT HIỆN ĐỊNH DẠNG URI - ĐANG BÓC TÁCH... ----");
             var uri = new Uri(connectionString);
             var userInfo = uri.UserInfo.Split(':');
             var username = userInfo[0];
@@ -33,7 +35,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             var port = uri.Port > 0 ? uri.Port : 5432;
             var database = uri.AbsolutePath.TrimStart('/');
 
-            connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+            connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};Port={port};SSL Mode=Require;Trust Server Certificate=true";
+            Console.WriteLine($"---- KẾT NỐI TỚI HOST: {host} (Cổng: {port}) ----");
+        }
+        else
+        {
+            Console.WriteLine("---- DÙNG ĐỊNH DẠNG CONNECTION STRING TIÊU CHUẨN ----");
         }
         options.UseNpgsql(connectionString);
     }
