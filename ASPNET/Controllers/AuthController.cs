@@ -81,7 +81,11 @@ public class AuthController : ControllerBase
     private string GenerateJwtToken(User user)
     {
         var jwtSettings = _config.GetSection("JwtSettings");
-        var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+        string keyString = jwtSettings["Key"] ?? "MangaStore_Digital_Super_Secret_Key_2024_Security_Check_Must_Be_Long";
+        var key = Encoding.UTF8.GetBytes(keyString);
+        
+        string durationStr = jwtSettings["DurationInMinutes"] ?? "1440";
+        double duration = double.TryParse(durationStr, out var d) ? d : 1440;
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -92,9 +96,9 @@ public class AuthController : ControllerBase
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role)
             }),
-            Expires = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"]!)),
-            Issuer = jwtSettings["Issuer"],
-            Audience = jwtSettings["Audience"],
+            Expires = DateTime.UtcNow.AddMinutes(duration),
+            Issuer = jwtSettings["Issuer"] ?? "MangaStoreAPI",
+            Audience = jwtSettings["Audience"] ?? "MangaStoreUsers",
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 

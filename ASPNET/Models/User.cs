@@ -40,6 +40,4 @@ public class User
     // Navigation property: Thư viện sở hữu
     public ICollection<UserLibrary> Library { get; set; } = new List<UserLibrary>();
 
-    [Timestamp]
-    public byte[]? RowVersion { get; set; }
 }

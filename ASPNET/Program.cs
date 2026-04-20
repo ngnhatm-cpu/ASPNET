@@ -137,9 +137,13 @@ app.UseSwaggerUI(options =>
 
 
 app.UseDefaultFiles(); // Tự động nhận index.html
-app.UseStaticFiles(); // Phục vụ file từ wwwroot
-app.UseCors("AllowAll");
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.UseRouting(); // Thêm dòng này để xác định routing trước khi Auth
 
 app.UseAuthentication();
 app.UseAuthorization();

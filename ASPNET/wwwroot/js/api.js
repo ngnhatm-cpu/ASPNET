@@ -29,13 +29,20 @@ async function apiFetch(endpoint, options = {}) {
         return;
     }
 
+    const text = await response.text();
+    let data;
+    try {
+        data = text ? JSON.parse(text) : {};
+    } catch (e) {
+        data = { message: "Lỗi phản hồi từ server" };
+    }
+
     if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: "Đã có lỗi xảy ra" }));
-        throw new Error(error.message || "Lỗi API");
+        throw new Error(data.message || "Đã có lỗi xảy ra");
     }
 
     if (response.status === 204) return null;
-    return await response.json();
+    return data;
 }
 
 function checkAdmin() {
