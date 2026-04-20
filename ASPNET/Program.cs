@@ -35,7 +35,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             var port = uri.Port > 0 ? uri.Port : 5432;
             var database = uri.AbsolutePath.TrimStart('/');
 
-            connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};Port={port};SSL Mode=Require;Trust Server Certificate=true";
+            connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
             Console.WriteLine($"---- KẾT NỐI TỚI HOST: {host} (Cổng: {port}) ----");
         }
         else
@@ -59,7 +59,7 @@ builder.Services.AddScoped<VNPayService>();
 
 // Cấu hình JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? "MangaStore_Digital_Super_Secret_Key_2024_MustBe32Chars");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -156,11 +156,9 @@ app.UseSwaggerUI(options =>
 
 
 app.UseDefaultFiles(); // Tự động nhận index.html
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-
-app.UseDefaultFiles();
-app.UseStaticFiles();
 
 app.UseRouting(); // Thêm dòng này để xác định routing trước khi Auth
 
