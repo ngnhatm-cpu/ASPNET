@@ -20,35 +20,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-    if (!builder.Environment.IsDevelopment())
+    // Tự động bóc tách nếu là định dạng postgresql:// (từ Render env variable)
+    if (!string.IsNullOrEmpty(connectionString) && (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://")))
     {
-        Console.WriteLine("---- MÔI TRƯỜNG PRODUCTION (RENDER) ----");
-        // Chạy trên Render -> Tự động xử lý nếu là định dạng postgresql://
-        if (!string.IsNullOrEmpty(connectionString) && (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://")))
-        {
-            Console.WriteLine("---- PHÁT HIỆN ĐỊNH DẠNG URI - ĐANG BÓC TÁCH... ----");
-            var uri = new Uri(connectionString);
-            var userInfo = uri.UserInfo.Split(':');
-            var username = userInfo[0];
-            var password = userInfo.Length > 1 ? userInfo[1] : "";
-            var host = uri.Host;
-            var port = uri.Port > 0 ? uri.Port : 5432;
-            var database = uri.AbsolutePath.TrimStart('/');
-
-            connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
-            Console.WriteLine($"---- KẾT NỐI TỚI HOST: {host} (Cổng: {port}) ----");
-        }
-        else
-        {
-            Console.WriteLine("---- DÙNG ĐỊNH DẠNG CONNECTION STRING TIÊU CHUẨN ----");
-        }
-        options.UseNpgsql(connectionString);
+        Console.WriteLine("---- PHÁT HIỆN ĐỊNH DẠNG URI - ĐANG BÓC TÁCH... ----");
+        var uri = new Uri(connectionString);
+        var userInfo = uri.UserInfo.Split(':');
+        var username = userInfo[0];
+        var password = userInfo.Length > 1 ? userInfo[1] : "";
+        var host = uri.Host;
+        var port = uri.Port > 0 ? uri.Port : 5432;
+        var database = uri.AbsolutePath.TrimStart('/');
+        connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+        Console.WriteLine($"---- KẾT NỐI TỚI HOST: {host} ----");
     }
     else
     {
-        // Chạy ở Local -> Dùng SQL Server
-        options.UseSqlServer(connectionString);
+        Console.WriteLine("---- DÙNG ĐỊNH DẠNG CONNECTION STRING TIÊU CHUẨN ----");
     }
+
+    // Cả local lẫn Render đều dùng PostgreSQL
+    options.UseNpgsql(connectionString);
 });
 
 // Đăng ký Watermark Service
