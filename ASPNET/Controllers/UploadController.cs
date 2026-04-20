@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 namespace ASPNET.Controllers;
 
@@ -8,37 +10,43 @@ namespace ASPNET.Controllers;
 [Authorize(Roles = "Admin")]
 public class UploadController : ControllerBase
 {
-    private readonly IWebHostEnvironment _env;
+    private readonly Cloudinary _cloudinary;
 
-    public UploadController(IWebHostEnvironment env)
+    public UploadController(IConfiguration config)
     {
-        _env = env;
+        var cloudName = config["Cloudinary:CloudName"] ?? "dxomzjopo";
+        var apiKey    = config["Cloudinary:ApiKey"]    ?? "579321641957572";
+        var apiSecret = config["Cloudinary:ApiSecret"] ?? "jBSdfW7ukLu5kOFFw-zWPpJa7X8";
+
+        var account = new Account(cloudName, apiKey, apiSecret);
+        _cloudinary = new Cloudinary(account);
+        _cloudinary.Api.Secure = true;
     }
 
+    // POST: api/Upload/image
     [HttpPost("image")]
     public async Task<IActionResult> UploadImage(IFormFile file)
     {
         if (file == null || file.Length == 0)
             return BadRequest(new { message = "Không có file nào được tải lên." });
 
-        var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "mangas");
-        if (!Directory.Exists(uploadsFolder))
-            Directory.CreateDirectory(uploadsFolder);
-
-        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        using var stream = file.OpenReadStream();
+        var uploadParams = new ImageUploadParams
         {
-            await file.CopyToAsync(stream);
-        }
+            File           = new FileDescription(file.FileName, stream),
+            Folder         = "mangastore/mangas",
+            Transformation = new Transformation().Quality("auto").FetchFormat("auto")
+        };
 
-        var imageUrl = $"/uploads/mangas/{uniqueFileName}";
-        return Ok(new { url = imageUrl });
+        var result = await _cloudinary.UploadAsync(uploadParams);
+
+        if (result.Error != null)
+            return BadRequest(new { message = result.Error.Message });
+
+        return Ok(new { url = result.SecureUrl.ToString() });
     }
 
     // POST: api/Upload/chapter-pages/{chapterId}
-    // Upload ảnh trang truyện cho một chapter cụ thể (dùng chapterId làm thư mục cố định)
     [HttpPost("chapter-pages/{chapterId}")]
     public async Task<IActionResult> UploadChapterPages(int chapterId, [FromForm] List<IFormFile> files)
     {
@@ -47,33 +55,30 @@ public class UploadController : ControllerBase
 
         try
         {
-            // Dùng chapterId cố định làm tên thư mục → không bao giờ sai đường dẫn
-            var relativePath = Path.Combine("uploads", "chapters", chapterId.ToString());
-            var physicalPath = Path.Combine(_env.WebRootPath, relativePath);
-
-            // Xóa ảnh cũ nếu có → luôn sạch trước khi upload mới
-            if (Directory.Exists(physicalPath))
-                Directory.Delete(physicalPath, recursive: true);
-
-            Directory.CreateDirectory(physicalPath);
-
+            var urls = new List<string>();
             int index = 1;
+
             foreach (var file in files.OrderBy(f => f.FileName))
             {
-                var ext = Path.GetExtension(file.FileName);
-                var pageFileName = $"{index:D3}{ext}"; // 001.jpg, 002.jpg ...
-                var pagePath = Path.Combine(physicalPath, pageFileName);
-
-                using (var stream = new FileStream(pagePath, FileMode.Create))
+                using var stream = file.OpenReadStream();
+                var uploadParams = new ImageUploadParams
                 {
-                    await file.CopyToAsync(stream);
-                }
+                    File           = new FileDescription($"{index:D3}{System.IO.Path.GetExtension(file.FileName)}", stream),
+                    Folder         = $"mangastore/chapters/{chapterId}",
+                    PublicId       = $"{index:D3}",
+                    Overwrite      = true,
+                    Transformation = new Transformation().Quality("auto").FetchFormat("auto")
+                };
+
+                var result = await _cloudinary.UploadAsync(uploadParams);
+                if (result.Error != null)
+                    return BadRequest(new { message = $"Lỗi upload trang {index}: {result.Error.Message}" });
+
+                urls.Add(result.SecureUrl.ToString());
                 index++;
             }
 
-            // Đường dẫn virtual trả về cho client
-            var virtualPath = "/" + relativePath.Replace('\\', '/');
-            return Ok(new { folderUrl = virtualPath, count = files.Count });
+            return Ok(new { urls = urls, count = urls.Count });
         }
         catch (Exception ex)
         {

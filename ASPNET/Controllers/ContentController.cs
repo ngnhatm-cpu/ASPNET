@@ -135,21 +135,30 @@ public class ContentController : ControllerBase
         if (string.IsNullOrEmpty(filePath))
             return new List<string>();
 
-        // Normalize path
+        // Thử parse JSON array of URLs (định dạng Cloudinary mới)
+        if (filePath.TrimStart().StartsWith("["))
+        {
+            try
+            {
+                var urls = System.Text.Json.JsonSerializer.Deserialize<List<string>>(filePath);
+                return urls ?? new List<string>();
+            }
+            catch { }
+        }
+
+        // Fallback: định dạng cũ (folder local path)
         var cleanPath = filePath.Replace('\\', '/').TrimStart('/');
         var physicalPath = Path.Combine(_env.WebRootPath, cleanPath);
 
         if (Directory.Exists(physicalPath))
         {
-            var files = Directory.GetFiles(physicalPath)
-                                 .Where(f => f.EndsWith(".jpg") || f.EndsWith(".png") || f.EndsWith(".jpeg") || f.EndsWith(".webp"))
-                                 .OrderBy(f => f)
-                                 .Select(f => "/" + cleanPath + "/" + Path.GetFileName(f))
-                                 .ToList();
-            return files;
+            return Directory.GetFiles(physicalPath)
+                .Where(f => f.EndsWith(".jpg") || f.EndsWith(".png") || f.EndsWith(".jpeg") || f.EndsWith(".webp"))
+                .OrderBy(f => f)
+                .Select(f => "/" + cleanPath + "/" + Path.GetFileName(f))
+                .ToList();
         }
 
-        // Return empty if not found so UI displays error/empty instead of fake data
         return new List<string>();
     }
 

@@ -145,8 +145,8 @@ chapterForm.addEventListener("submit", async (e) => {
             statusEl.textContent = `✅ Tải lên ${uploadData.count} ảnh thành công!`;
             statusEl.className = "text-xs mt-1 text-green-400";
 
-            // Cập nhật filePath với đường dẫn mới
-            const finalBody = { ...body, id: savedChapterId, filePath: uploadData.folderUrl };
+            // Lưu JSON array của Cloudinary URLs vào filePath
+            const finalBody = { ...body, id: savedChapterId, filePath: JSON.stringify(uploadData.urls) };
             await apiFetch(`/Chapters/${savedChapterId}`, { method: "PUT", body: JSON.stringify(finalBody) });
         }
 
