@@ -22,18 +22,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
     if (builder.Environment.IsDevelopment())
     {
-        // Chạy ở Local (máy tính cá nhân) -> Dùng SQL Server
+        // Chạy ở Local -> Dùng SQL Server
         options.UseSqlServer(connectionString);
     }
     else
     {
-        // Chạy trên Render -> Dùng PostgreSQL
-        if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
-        {
-            var uri = new Uri(connectionString);
-            var userInfo = uri.UserInfo.Split(':');
-            connectionString = $"Host={uri.Host};Database={uri.AbsolutePath.Substring(1)};Username={userInfo[0]};Password={userInfo[1]};Port={uri.Port};SSL Mode=Require;Trust Server Certificate=true";
-        }
+        // Chạy trên Render -> Dùng PostgreSQL (Npgsql 8.0 hỗ trợ trực tiếp định dạng postgres://)
         options.UseNpgsql(connectionString);
     }
 });

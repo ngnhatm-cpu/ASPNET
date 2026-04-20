@@ -19,7 +19,9 @@ public class VNPayService
         string tmnCode = vnpayConfig["TmnCode"] ?? "";
         string hashSecret = vnpayConfig["HashSecret"] ?? "";
         string baseUrl = vnpayConfig["BaseUrl"] ?? "";
-        string returnUrl = vnpayConfig["ReturnUrl"] ?? "";
+        // Tự động xây dựng ReturnUrl dựa trên domain hiện tại của website
+        var request = context.Request;
+        string returnUrl = $"{request.Scheme}://{request.Host}/api/Payments/vnpay-return";
 
         // VNPay expects amount in cents (multiply by 100)
         long vnpAmount = (long)(amount * 100);
@@ -31,7 +33,7 @@ public class VNPayService
         data.Add("vnp_Amount", vnpAmount.ToString());
         data.Add("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
         data.Add("vnp_CurrCode", "VND");
-        data.Add("vnp_IpAddr", "127.0.0.1"); // Sử dụng IP loopback cho môi trường Dev
+        data.Add("vnp_IpAddr", "127.0.0.1"); 
         data.Add("vnp_Locale", "vn");
         data.Add("vnp_OrderInfo", orderInfo);
         data.Add("vnp_OrderType", "other");
