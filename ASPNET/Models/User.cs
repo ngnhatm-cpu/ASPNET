@@ -40,4 +40,8 @@ public class User
     // Navigation property: Thư viện sở hữu
     public ICollection<UserLibrary> Library { get; set; } = new List<UserLibrary>();
 
+    // OTP Reset Password
+    [MaxLength(6)]
+    public string? ResetOtp { get; set; }
+    public DateTime? ResetOtpExpiry { get; set; }
 }

@@ -49,6 +49,9 @@ builder.Services.AddScoped<IWatermarkService, WatermarkService>();
 // Đăng ký VNPay Service
 builder.Services.AddScoped<VNPayService>();
 
+// Đăng ký Email Service
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 // Cấu hình JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? "MangaStore_Digital_Super_Secret_Key_2024_MustBe32Chars");
