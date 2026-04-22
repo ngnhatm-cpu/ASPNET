@@ -108,6 +108,11 @@ function renderDetail(manga) {
                     </div>
                 </div>
                 <div class="mt-4 md:mt-0 flex items-center gap-3">
+                    ${(isFree || isPurchased) ? `
+                        <button onclick="handleDownload(event, ${chap.id})" class="w-8 h-8 bg-white/5 hover:bg-primary/20 text-white/60 hover:text-primary rounded-lg transition-all flex items-center justify-center" title="Tải chương này">
+                            <span class="material-symbols-outlined text-[18px]">download</span>
+                        </button>
+                    ` : ''}
                     <span class="px-3 py-1 ${badgeObj.bg} ${badgeObj.border} border text-[10px] font-bold uppercase tracking-widest ${badgeObj.color} rounded flex items-center gap-1">
                         <span class="material-symbols-outlined text-[12px]">${badgeObj.icon}</span> ${badgeObj.text}
                     </span>
@@ -223,6 +228,42 @@ async function buyChapter() {
         
         const btn = document.getElementById("btnConfirmBuy");
         btn.textContent = "Thử lại";
+        btn.disabled = false;
+    }
+}
+
+async function handleDownload(event, chapterId) {
+    event.stopPropagation();
+    const btn = event.currentTarget;
+    const originalIcon = btn.innerHTML;
+    try {
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">sync</span>';
+        btn.disabled = true;
+        const token = localStorage.getItem("token");
+        const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+        const response = await fetch(`/api/Content/download/${chapterId}`, { headers });
+        if (response.status === 401) throw new Error("Vui lòng đăng nhập để tải!");
+        if (response.status === 403) throw new Error("Bạn chưa mua chương này!");
+        if (!response.ok) throw new Error("Lỗi khi tải file!");
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let fileName = `chapter_${chapterId}.zip`;
+        if (contentDisposition && contentDisposition.includes('filename=')) {
+            fileName = contentDisposition.split('filename=')[1].trim().replace(/"/g, '');
+        }
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-green-400">check</span>';
+        setTimeout(() => { btn.innerHTML = originalIcon; btn.disabled = false; }, 2000);
+    } catch (error) {
+        alert(error.message);
+        btn.innerHTML = originalIcon;
         btn.disabled = false;
     }
 }

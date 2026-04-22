@@ -108,26 +108,61 @@ public class ContentController : ControllerBase
         }
 
         var userEmail = User.FindFirstValue(ClaimTypes.Email) ?? "Guest";
+        var imageUrls = GetDemoPages(chapter.FilePath);
+        
+        if (imageUrls == null || !imageUrls.Any())
+            return BadRequest(new { message = "Chương này chưa có hình ảnh để tải." });
 
-        // 1. Giả lập lấy ảnh từ folder/cloud
-        // Thực tế: Lấy ảnh từ đĩa hoặc cloud storage
-        // Demo: Tạo 1 ảnh trống hoặc dùng ảnh mẫu
-        byte[] dummyImage = CreateDummyImage();
-
-        // 2. Đóng dấu Watermark email khách hàng
-        byte[] watermarkedImage = _watermarkService.ApplyWatermark(dummyImage, $"Bản quyền thuộc về: {userEmail}");
-
-        // 3. Nén thành file .zip
         using var ms = new MemoryStream();
         using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, true))
         {
-            var entry = archive.CreateEntry($"{chapter.Manga!.Title}_{chapter.Title}_page1.jpg");
-            using var entryStream = entry.Open();
-            entryStream.Write(watermarkedImage, 0, watermarkedImage.Length);
+            var httpClient = new HttpClient();
+            int pageNum = 1;
+
+            foreach (var url in imageUrls)
+            {
+                byte[]? originalBytes = null;
+
+                try 
+                {
+                    if (url.StartsWith("http"))
+                    {
+                        originalBytes = await httpClient.GetByteArrayAsync(url);
+                    }
+                    else 
+                    {
+                        // Local path
+                        var physicalPath = Path.Combine(_env.WebRootPath, url.TrimStart('/'));
+                        if (System.IO.File.Exists(physicalPath))
+                        {
+                            originalBytes = await System.IO.File.ReadAllBytesAsync(physicalPath);
+                        }
+                    }
+
+                    if (originalBytes != null)
+                    {
+                        // Đóng dấu Watermark
+                        byte[] watermarkedImage = _watermarkService.ApplyWatermark(originalBytes, $"Bản quyền thuộc về: {userEmail}");
+                        
+                        var entry = archive.CreateEntry($"page_{pageNum++:D3}.jpg");
+                        using var entryStream = entry.Open();
+                        entryStream.Write(watermarkedImage, 0, watermarkedImage.Length);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log error but continue with other pages
+                    Console.WriteLine($"Error processing page {url}: {ex.Message}");
+                }
+            }
         }
 
+        if (ms.Length == 0)
+            return BadRequest(new { message = "Không thể xử lý hình ảnh của chương này." });
+
         ms.Position = 0;
-        return File(ms.ToArray(), "application/zip", $"{chapter.Manga!.Title}_{chapter.Title}.zip");
+        var fileName = $"{chapter.Manga!.Title}_{chapter.Title}".Replace(" ", "_") + ".zip";
+        return File(ms.ToArray(), "application/zip", fileName);
     }
 
     private List<string> GetDemoPages(string? filePath)
@@ -160,14 +195,5 @@ public class ContentController : ControllerBase
         }
 
         return new List<string>();
-    }
-
-    private byte[] CreateDummyImage()
-    {
-        // Tạo 1 ảnh JPEG trắng đơn giản để demo watermark
-        using var image = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(800, 1200);
-        using var outMs = new MemoryStream();
-        image.Save(outMs, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
-        return outMs.ToArray();
     }
 }
