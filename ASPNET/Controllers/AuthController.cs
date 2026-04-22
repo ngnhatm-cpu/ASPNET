@@ -110,9 +110,15 @@ public class AuthController : ControllerBase
                 <p style='font-size: 12px; color: #888; text-align: center;'>Đây là email tự động, vui lòng không phản hồi.</p>
             </div>";
 
-        await _emailService.SendEmailAsync(user.Email, subject, message);
-
-        return Ok(new { message = "Mã OTP đã được gửi về Gmail của bạn" });
+        try 
+        {
+            await _emailService.SendEmailAsync(user.Email, subject, message);
+            return Ok(new { message = "Mã OTP đã được gửi về Gmail của bạn" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Lỗi gửi mail: " + ex.Message });
+        }
     }
 
     [HttpPost("verify-otp")]

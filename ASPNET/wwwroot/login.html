@@ -55,8 +55,9 @@
         
         .floating-label-group:focus-within label,
         .floating-label-group input:not(:placeholder-shown) + label {
-            transform: translateY(-1.5rem) scale(0.85);
+            transform: translateY(-2rem) scale(0.8);
             color: #ffb3b1;
+            background-color: transparent;
         }
 
         .glass-panel {
@@ -91,21 +92,25 @@
             <div id="errorMessage" class="hidden bg-red-500/20 text-red-400 px-4 py-3 rounded text-sm font-bold border border-red-500/50"></div>
             
             <div class="relative floating-label-group">
-                <input id="username" type="text" placeholder=" " required class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline/30 focus:border-primary focus:ring-0 transition-all pt-6 pb-2 text-on-surface font-medium">
-                <label for="username" class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-xs tracking-widest font-bold">Tên đăng nhập</label>
+                <input id="username" type="text" placeholder=" " autocomplete="off" required class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline/30 focus:border-primary focus:ring-0 transition-all pt-7 pb-2 text-on-surface font-medium">
+                <label for="username" class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-[10px] tracking-widest font-bold">Tên đăng nhập</label>
             </div>
 
             <div class="relative floating-label-group">
-                <input id="password" type="password" placeholder=" " required class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline/30 focus:border-primary focus:ring-0 transition-all pt-6 pb-2 text-on-surface font-medium">
-                <label for="password" class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-xs tracking-widest font-bold">Mật khẩu</label>
+                <input id="password" type="password" placeholder=" " autocomplete="new-password" required class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline/30 focus:border-primary focus:ring-0 transition-all pt-7 pb-2 text-on-surface font-medium">
+                <label for="password" class="absolute left-0 top-6 text-on-surface-variant transition-all pointer-events-none uppercase text-[10px] tracking-widest font-bold">Mật khẩu</label>
             </div>
+
 
             <button type="submit" class="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-black uppercase tracking-widest rounded shadow-[0_0_20px_rgba(255,83,91,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all">
                 Đăng Nhập
             </button>
         </form>
 
-        <div class="mt-8 text-center">
+        <div class="mt-8 text-center space-y-2">
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">
+                <a href="forgot-password.html" class="hover:text-primary transition-all">Quên mật khẩu?</a>
+            </p>
             <p class="text-sm text-on-surface-variant">Chưa có tài khoản? <a href="register.html" class="text-primary font-bold hover:underline underline-offset-4 transition-all">Đăng ký ngay</a></p>
         </div>
     </div>

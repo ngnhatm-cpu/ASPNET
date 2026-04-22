@@ -3,6 +3,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.getElementById("registerForm");
     const errorMsg = document.getElementById("errorMessage");
 
+    // Xóa sạch các trường nhập liệu khi load trang (để tránh browser tự điền)
+    const clearFields = () => {
+        if (loginForm) {
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        }
+        if (registerForm) {
+            document.getElementById("username").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+        }
+    };
+    clearFields();
+    setTimeout(clearFields, 100); // Thử lại sau 100ms để chắc chắn
+
     function showError(message) {
         if (errorMsg) {
             errorMsg.textContent = message;

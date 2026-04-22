@@ -17,9 +17,17 @@ public class EmailService : IEmailService
     public async Task SendEmailAsync(string email, string subject, string message)
     {
         var emailSettings = _config.GetSection("EmailSettings");
+        var senderName = emailSettings["SenderName"] ?? "Manga Store";
+        var senderEmail = emailSettings["SenderEmail"];
+        var password = emailSettings["Password"];
+
+        if (string.IsNullOrEmpty(senderEmail) || string.IsNullOrEmpty(password))
+        {
+            throw new Exception("Cấu hình Email (SenderEmail hoặc Password) chưa được thiết lập trong appsettings.json");
+        }
         
         var mimeMessage = new MimeMessage();
-        mimeMessage.From.Add(new MailboxAddress(emailSettings["SenderName"], emailSettings["SenderEmail"]));
+        mimeMessage.From.Add(new MailboxAddress(senderName, senderEmail));
         mimeMessage.To.Add(new MailboxAddress("", email));
         mimeMessage.Subject = subject;
 
@@ -29,8 +37,8 @@ public class EmailService : IEmailService
         using var client = new SmtpClient();
         try
         {
-            await client.ConnectAsync(emailSettings["SmtpServer"], int.Parse(emailSettings["Port"] ?? "587"), SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(emailSettings["SenderEmail"], emailSettings["Password"]);
+            await client.ConnectAsync(emailSettings["SmtpServer"] ?? "smtp.gmail.com", int.Parse(emailSettings["Port"] ?? "587"), SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(senderEmail, password);
             await client.SendAsync(mimeMessage);
             await client.DisconnectAsync(true);
         }
